@@ -41,9 +41,9 @@ jobs:
       - name: Build and push Docker image
         uses: reitermarkus/.github/actions/docker-build-push@main
         with:
-          registry: ${{ inputs.registry || null }}
-          image-name: ${{ inputs.image-name || null }}
-          username: ${{ inputs.username || null }}
-          password: ${{ inputs.password || null }}
-          platforms: ${{ inputs.platforms || null }}
+          registry: ${{ inputs.registry || undefined }}
+          image-name: ${{ inputs.image-name || undefined }}
+          username: ${{ inputs.username || undefined }}
+          password: ${{ inputs.password || undefined }}
+          platforms: ${{ inputs.platforms || undefined }}
         id: build-push
