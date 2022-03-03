@@ -3,23 +3,23 @@ on:
     inputs:
       registry:
         description: 'Docker registry'
-        required: false
+        default: 'ghcr.io'
         type: string
       image-name:
         description: 'Docker image name'
-        required: false
+        default: '${{ github.repository }}'
         type: string
       username:
         description: 'Username for Docker registry'
-        required: false
+        default: '${{ github.actor }}'
         type: string
       password:
         description: 'Password for Docker registry'
-        required: false
+        default: '${{ github.token }}'
         type: string
       platforms:
         description: 'Platforms to build for'
-        required: false
+        default: 'linux/amd64,linux/arm64'
         type: string
 
 name: CI
@@ -44,6 +44,6 @@ jobs:
           registry: ${{ inputs.registry }}
           image-name: ${{ inputs.image-name }}
           username: ${{ inputs.username }}
-          password: ${{ inputs.password || github.token }}
+          password: ${{ inputs.password }}
           platforms: ${{ inputs.platforms }}
         id: build-push
