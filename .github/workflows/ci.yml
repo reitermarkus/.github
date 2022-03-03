@@ -1,0 +1,9 @@
+on: [pull_request, push]
+
+name: CI
+
+jobs:
+  ci:
+    uses: reitermarkus/.github/.github/workflows/docker-build-push.yml@main
+    with:
+      image-name: ${{ github.repository_owner }}/github
