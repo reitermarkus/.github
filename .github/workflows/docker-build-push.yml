@@ -4,22 +4,27 @@ on:
       registry:
         description: 'Docker registry'
         default: 'ghcr.io'
+        required: true
         type: string
       image-name:
         description: 'Docker image name'
         default: '${{ github.repository }}'
+        required: true
         type: string
       username:
         description: 'Username for Docker registry'
         default: '${{ github.actor }}'
+        required: true
         type: string
       password:
         description: 'Password for Docker registry'
         default: '${{ github.token }}'
+        required: true
         type: string
       platforms:
         description: 'Platforms to build for'
         default: 'linux/amd64,linux/arm64'
+        required: true
         type: string
 
 name: CI
@@ -38,12 +43,42 @@ jobs:
       - name: Check out Repository
         uses: actions/checkout@v2
 
-      - name: Build and push Docker image
-        uses: reitermarkus/.github/actions/docker-build-push@main
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Log in to GitHub Container Registry
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v1
         with:
           registry: ${{ inputs.registry }}
-          image-name: ${{ inputs.image-name }}
           username: ${{ inputs.username }}
           password: ${{ inputs.password }}
+
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          images: ${{ inputs.registry }}/${{ inputs.image-name }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v2
+        with:
           platforms: ${{ inputs.platforms }}
+          push: ${{ github.event_name != 'pull_request' }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
         id: build-push
+
+      - name: Set output
+        run: |
+          echo "::set-output name=digest::$(echo "${metadata}" | jq -r '.["containerimage.digest"]')"
+          echo "::set-output name=image-name::$(echo "${metadata}" | jq -r '.["image.name"]')"
+        shell: bash
+        env:
+          metadata: ${{ steps.build-push.outputs.metadata }}
+        id: set-outputs
