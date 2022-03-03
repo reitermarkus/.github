@@ -13,7 +13,7 @@ on:
         description: 'Username for Docker registry'
         default: '${{ github.actor }}'
         type: string
-      password:
+      token:
         description: 'Password for Docker registry'
         default: '${{ github.token }}'
         type: string
@@ -50,7 +50,7 @@ jobs:
         with:
           registry: ${{ inputs.registry }}
           username: ${{ inputs.username }}
-          password: ${{ inputs.password }}
+          password: ${{ inputs.token }}
 
       - name: Extract Docker metadata
         id: meta
