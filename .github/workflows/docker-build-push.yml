@@ -44,6 +44,6 @@ jobs:
           registry: ${{ inputs.registry }}
           image-name: ${{ inputs.image-name }}
           username: ${{ inputs.username }}
-          password: ${{ inputs.password }}
+          password: ${{ inputs.password || github.token }}
           platforms: ${{ inputs.platforms }}
         id: build-push
