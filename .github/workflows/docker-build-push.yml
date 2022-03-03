@@ -3,23 +3,23 @@ on:
     inputs:
       registry:
         description: 'Docker registry'
-        default: 'ghcr.io'
+        required: false
         type: string
       image-name:
         description: 'Docker image name'
-        default: '${{ github.repository }}'
+        required: false
         type: string
       username:
         description: 'Username for Docker registry'
-        default: '${{ github.actor }}'
+        required: false
         type: string
       password:
         description: 'Password for Docker registry'
-        default: '${{ github.token }}'
+        required: false
         type: string
       platforms:
         description: 'Platforms to build for'
-        default: 'linux/amd64,linux/arm64'
+        required: false
         type: string
 
 name: CI
