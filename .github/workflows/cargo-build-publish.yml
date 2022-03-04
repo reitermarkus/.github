@@ -28,15 +28,8 @@ jobs:
           toolchain: stable
           override: true
 
-      - uses: actions/cache@v2
-        with:
-          path: |
-            ~/.cargo/bin/
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            target/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+      - name: Set up cache
+        uses: Swatinem/rust-cache@842ef286fff290e445b90b4002cc9807c3669641
 
       - name: Install clippy
         run: rustup component add clippy
@@ -65,15 +58,8 @@ jobs:
           toolchain: ${{ inputs.toolchain }}
           override: true
 
-      - uses: actions/cache@v2
-        with:
-          path: |
-            ~/.cargo/bin/
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            target/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+      - name: Set up cache
+        uses: Swatinem/rust-cache@842ef286fff290e445b90b4002cc9807c3669641
 
       - name: Run tests
         uses: actions-rs/cargo@v1
@@ -94,15 +80,8 @@ jobs:
           toolchain: ${{ inputs.toolchain }}
           override: true
 
-      - uses: actions/cache@v2
-        with:
-          path: |
-            ~/.cargo/bin/
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            target/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+      - name: Set up cache
+        uses: Swatinem/rust-cache@842ef286fff290e445b90b4002cc9807c3669641
 
       - name: Log into crates.io
         if: github.event_name != 'pull_request'
