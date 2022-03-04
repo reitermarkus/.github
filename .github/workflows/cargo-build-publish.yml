@@ -22,7 +22,7 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out Repository
+      - name: Check out repository
         uses: actions/checkout@v3
 
       - name: Install toolchain
@@ -57,7 +57,7 @@ jobs:
           - ubuntu-latest
           - macos-latest
     steps:
-      - name: Check out Repository
+      - name: Check out repository
         uses: actions/checkout@v3
 
       - name: Install toolchain
@@ -91,7 +91,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: test
     steps:
-      - name: Check out Repository
+      - name: Check out repository
         uses: actions/checkout@v3
 
       - name: Install toolchain
