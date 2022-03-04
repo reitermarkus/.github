@@ -28,6 +28,9 @@ jobs:
           toolchain: stable
           override: true
 
+      - name: Set up cache
+        uses: Swatinem/rust-cache@842ef286fff290e445b90b4002cc9807c3669641
+
       - name: Install clippy
         run: rustup component add clippy
 
@@ -49,6 +52,15 @@ jobs:
       - name: Check out Repository
         uses: actions/checkout@v3
 
+      - name: Install stable toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ inputs.toolchain }}
+          override: true
+
+      - name: Set up cache
+        uses: Swatinem/rust-cache@842ef286fff290e445b90b4002cc9807c3669641
+
       - name: Run tests
         uses: actions-rs/cargo@v1
         with:
@@ -61,6 +73,15 @@ jobs:
     steps:
       - name: Check out Repository
         uses: actions/checkout@v3
+
+      - name: Install stable toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ inputs.toolchain }}
+          override: true
+
+      - name: Set up cache
+        uses: Swatinem/rust-cache@842ef286fff290e445b90b4002cc9807c3669641
 
       - name: Log into crates.io
         if: github.event_name != 'pull_request'
