@@ -109,7 +109,7 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: login
-          args: ${{ secrets.CRATESIO_TOKEN }}
+          args: -- ${{ secrets.CRATESIO_TOKEN }}
 
       - name: Publish crate
         uses: actions-rs/cargo@v1
