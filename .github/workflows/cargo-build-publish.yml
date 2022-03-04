@@ -32,7 +32,7 @@ jobs:
           override: true
 
       - name: Set up cache
-        uses: Swatinem/rust-cache@842ef286fff290e445b90b4002cc9807c3669641
+        uses: Swatinem/rust-cache@3bb3a9a087029c7bc392586cdc88cb6f66b9c6ef
 
       - name: Install clippy
         run: rustup component add clippy
@@ -67,7 +67,7 @@ jobs:
           override: true
 
       - name: Set up cache
-        uses: Swatinem/rust-cache@842ef286fff290e445b90b4002cc9807c3669641
+        uses: Swatinem/rust-cache@3bb3a9a087029c7bc392586cdc88cb6f66b9c6ef
 
       - name: Run tests without default features
         uses: actions-rs/cargo@v1
@@ -101,7 +101,7 @@ jobs:
           override: true
 
       - name: Set up cache
-        uses: Swatinem/rust-cache@842ef286fff290e445b90b4002cc9807c3669641
+        uses: Swatinem/rust-cache@3bb3a9a087029c7bc392586cdc88cb6f66b9c6ef
 
       - name: Log into crates.io
         if: github.event_name != 'pull_request'
