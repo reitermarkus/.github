@@ -61,12 +61,15 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: check
+          args: ${{ (steps.cargo-target.outputs.value && format('--target {0}', steps.cargo-target.outputs.value)) || '' }}
+          use-cross: ${{ !!steps.cargo-target.outputs.value }}
 
       - name: Run cargo clippy
         uses: actions-rs/clippy-check@v1
         with:
           token: ${{ github.token }}
-          args: -- -D warnings
+          args: ${{ (steps.cargo-target.outputs.value && format('--target {0}', steps.cargo-target.outputs.value)) || '' }} -- -D warnings
+          use-cross: ${{ !!steps.cargo-target.outputs.value }}
 
       - name: Generate build/test matrix
         run: |
