@@ -5,18 +5,35 @@
     ":preserveSemverRanges",
     "regexManagers:dockerfileVersions"
   ],
+  "enabledManagers": [
+    "regex"
+  ],
+  "packageRules": [
+    {
+      "datasources": [
+        "repology"
+      ],
+      "packagePatterns": [
+        "^alpine_\\d+_\\d+/"
+      ],
+      "separateMajorMinor": false,
+      "groupName": "alpine packages",
+      "groupSlug": "alpine"
+    }
+  ],
   "regexManagers": [
     {
       "description": "Update Alpine packages in Dockerfiles",
       "fileMatch": ["(^|/|\\.)Dockerfile$", "(^|/)Dockerfile\\.[^/]*$"],
       "matchStringsStrategy": "recursive",
       "matchStrings": [
-        "FROM\\s*.*?alpine[.:]?(?<alpineMajor>\\d+)\\.(?<alpineMinor>\\d+).*",
-        "apk\\s+add.*?[^\\\\]\\n",
-        "(?<depName>\\S+)=(?<currentValue>\\d+\\S*)"
+        "FROM\\s*.*?alpine[.:]?(?<alpineMajor>\\d+)\\.(?<alpineMinor>\\d+)(?:\\n|.)*",
+        "apk\\s+add\\s+(?:\\n|.)*?[^\\\\]\\n",
+        "(?<depName>[^\\s=]+)=(?<currentValue>[^\\s=]+)"
       ],
       "datasourceTemplate": "repology",
-      "depNameTemplate": "alpine_{{alpineMajor}}_{{alpineMinor}}/{{depName}}"
+      "depNameTemplate": "alpine_{{alpineMajor}}_{{alpineMinor}}/{{depName}}",
+      "versioningTemplate": "loose"
     }
   ]
 }
