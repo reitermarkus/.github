@@ -157,6 +157,8 @@ jobs:
 
   build:
     name: build (${{ matrix.target }})
+    outputs:
+      artifact: ${{ steps.artifact.outputs.name }}
     runs-on: ${{ matrix.os }}
     needs: lint
     strategy:
@@ -185,37 +187,49 @@ jobs:
             --all-features
           use-cross: ${{ matrix.use-cross }}
 
-      - name: Gather artifacts
+      - name: Archive artifacts
+        id: artifact
         run: |
+          set -x
+
           target_dir="target/${target}/release/"
-          ls -al "${target_dir}"
 
           metadata="$(cargo metadata --format-version 1 --no-deps)"
-          name="$(echo "${metadata}" | jq -r '.packages[0].name')"
-          files="$(
-            cargo metadata --format-version 1 --no-deps |
-            jq -c "[.packages[0].targets[] | select(.kind[] | contains(\"bin\")) | .name] | map($(jq -R <<< "${target_dir}") + .)"
-          )"
+          package_name="$(jq -r '.packages[0].name' <<< "${metadata}")"
+          files="$(jq "[.packages[0].targets[] | select(.kind[] | contains(\"bin\")) | .name]" <<< "${metadata}")"
 
-          jq -C <<< "${files}"
+          if [[ $(jq -r 'length' <<< "${files}") -eq 0 ]]; then
+            exit
+          fi
 
-          echo "::set-output name=name::${name}"
-          echo "::set-output name=files::${files}"
+          artifact_name="${package_name}-${target}"
+          artifacts_dir="artifacts"
+          artifact_path="${artifacts_dir}/${artifact_name}.tar.gz"
+
+          mkdir "${artifacts_dir}"
+
+          jq -r '.[]' <<< "${files}" | \
+            tar -cvzf "${artifact_path}" -C "${target_dir}" -T -
+
+          tar -tf "${artifact_path}"
+          ls -al "${artifact_path}"
+
+          echo "::set-output name=name::${artifact_name}"
+          echo "::set-output name=path::${artifact_path}"
         env:
           target: ${{ matrix.target }}
-        id: artifact
 
       - name: Upload artifacts
-        if: ${{ fromJson(steps.artifact.outputs.files) }}
+        if: ${{ steps.artifact.outputs.path }}
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ steps.artifact.outputs.name }}-${{ matrix.target }}
-          path: ${{ join(fromJson(steps.artifact.outputs.files), '\n') }}
+          name: ${{ steps.artifact.outputs.name }}
+          path: ${{ steps.artifact.outputs.path }}
           if-no-files-found: error
 
   publish:
     runs-on: ubuntu-latest
-    needs: [lint, test, build]
+    needs: [test, build]
     steps:
       - name: Check out repository
         uses: actions/checkout@v3
@@ -229,6 +243,12 @@ jobs:
       - name: Set up cache
         uses: Swatinem/rust-cache@3bb3a9a087029c7bc392586cdc88cb6f66b9c6ef
 
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          path:
+            artifacts
+
       - name: Log into crates.io
         if: github.event_name != 'pull_request'
         uses: actions-rs/cargo@v1
@@ -236,7 +256,24 @@ jobs:
           command: login
           args: -- ${{ secrets.CRATESIO_TOKEN }}
 
+      - name: Check if crate should be published
+        uses: SebRollen/toml-action@v1.0.0
+        id: cargo-toml-publish
+        with:
+          file: Cargo.toml
+          field: 'package.publish'
+
+      - name: Create GitHub release
+        if: github.event_name != 'pull_request'
+        uses: softprops/action-gh-release@v1
+        with:
+          draft: ${{ !startsWith(github.ref, 'refs/tags/v') }}
+          fail_on_unmatched_files: true
+          files: |
+            artifacts/*/*
+
       - name: Publish crate
+        if: ${{ steps.cargo-toml-publish.outputs.value != 'false' }}
         uses: actions-rs/cargo@v1
         with:
           command: publish
