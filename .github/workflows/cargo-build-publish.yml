@@ -24,7 +24,6 @@ env:
 jobs:
   lint:
     outputs:
-      target: ${{ steps.cargo-target.outputs.value }}
       test-matrix: ${{ steps.test-matrix.outputs.test-matrix }}
     runs-on: ubuntu-latest
     steps:
@@ -111,7 +110,7 @@ jobs:
         id: test-matrix
 
   test:
-    name: test (${{ needs.lint.outputs.target || matrix.target }})
+    name: test (${{ matrix.target }})
     runs-on: ${{ matrix.os }}
     needs: lint
     strategy:
@@ -125,7 +124,7 @@ jobs:
         with:
           toolchain: ${{ inputs.toolchain }}
           override: true
-          target: ${{ needs.lint.outputs.target }}
+          target: ${{ matrix.target }}
 
       - name: Set up cache
         uses: Swatinem/rust-cache@3bb3a9a087029c7bc392586cdc88cb6f66b9c6ef
@@ -171,7 +170,6 @@ jobs:
         with:
           toolchain: ${{ inputs.toolchain }}
           override: true
-          target: ${{ needs.lint.outputs.target }}
 
       - name: Set up cache
         uses: Swatinem/rust-cache@3bb3a9a087029c7bc392586cdc88cb6f66b9c6ef
