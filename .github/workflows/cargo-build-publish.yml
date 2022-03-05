@@ -43,9 +43,9 @@ jobs:
           command: check
 
       - name: Run cargo clippy
-        uses: actions-rs/cargo@v1
+        uses: actions-rs/clippy-check@v1
         with:
-          command: clippy
+          token: ${{ github.token }}
           args: -- -D warnings
 
   test:
