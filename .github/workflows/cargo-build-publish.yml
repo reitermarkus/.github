@@ -247,6 +247,7 @@ jobs:
         uses: Swatinem/rust-cache@3bb3a9a087029c7bc392586cdc88cb6f66b9c6ef
 
       - name: Download artifacts
+        if: needs.build.outputs.artifact
         uses: actions/download-artifact@v3
         with:
           path:
@@ -266,8 +267,8 @@ jobs:
           command: login
           args: -- ${{ secrets.CRATESIO_TOKEN }}
 
-      - name: Create GitHub release
-        if: github.event_name != 'pull_request'
+      - name: Upload GitHub release artifacts
+        if: needs.build.outputs.artifact != '' && github.event_name != 'pull_request'
         uses: softprops/action-gh-release@v1
         with:
           draft: ${{ !startsWith(github.ref, 'refs/tags/v') }}
