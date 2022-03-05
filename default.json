@@ -5,9 +5,6 @@
     ":preserveSemverRanges",
     "regexManagers:dockerfileVersions"
   ],
-  "enabledManagers": [
-    "regex"
-  ],
   "packageRules": [
     {
       "datasources": [
