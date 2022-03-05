@@ -39,7 +39,7 @@ jobs:
         id: cargo-config
 
       - name: Get target
-        uses: SebRollen/toml-action@v1.0.0
+        uses: SebRollen/toml-action@e6b4093b7c0220574cc9b6279f3be8bc850f88f6
         if: ${{ steps.cargo-config.outputs.cargo-config != '' }}
         id: cargo-target
         with:
@@ -260,7 +260,7 @@ jobs:
           args: -- ${{ secrets.CRATESIO_TOKEN }}
 
       - name: Check if crate should be published
-        uses: SebRollen/toml-action@v1.0.0
+        uses: SebRollen/toml-action@e6b4093b7c0220574cc9b6279f3be8bc850f88f6
         id: cargo-toml-publish
         with:
           file: Cargo.toml
