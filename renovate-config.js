@@ -5,5 +5,8 @@ module.exports = {
   platform: 'github',
   repositories: [
     'reitermarkus/.github',
-  ]
+  ],
+  enabledManagers: [
+    "regex"
+  ],
 };
