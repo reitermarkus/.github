@@ -7,3 +7,21 @@ jobs:
     uses: reitermarkus/.github/.github/workflows/docker-build-push.yml@main
     with:
       image-name: ${{ github.repository_owner }}/github
+  renovate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Self-hosted Renovate
+        uses: renovatebot/github-action@v31.81.2
+        with:
+          configurationFile: default.json
+          token: ${{ secrets.GH_TOKEN }}
+        env:
+          LOG_LEVEL: 'debug'
+
+      - name: Validate Renovate config
+        uses: rinchsan/renovate-config-validator@v0.0.10
+        with:
+          pattern: '*.json'

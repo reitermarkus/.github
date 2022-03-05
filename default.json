@@ -11,8 +11,8 @@
       "fileMatch": ["(^|/|\\.)Dockerfile$", "(^|/)Dockerfile\\.[^/]*$"],
       "matchStringsStrategy": "recursive",
       "matchStrings": [
-        "FROM\\s*.*alpine(?<alpineMajor>\\d+)\\.(?<alpineMinor>\\d+).*",
-        "apk\\s+add",
+        "FROM\\s*.*?alpine[.:]?(?<alpineMajor>\\d+)\\.(?<alpineMinor>\\d+).*",
+        "apk\\s+add.*?[^\\\\]\\n",
         "(?<depName>\\S+)=(?<currentValue>\\d+\\S*)"
       ],
       "datasourceTemplate": "repology",
