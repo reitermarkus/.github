@@ -246,19 +246,20 @@ jobs:
       - name: Set up cache
         uses: Swatinem/rust-cache@3bb3a9a087029c7bc392586cdc88cb6f66b9c6ef
 
-      - name: Download artifacts
-        if: needs.build.outputs.artifact
-        uses: actions/download-artifact@v3
-        with:
-          path:
-            artifacts
-
       - name: Check if crate should be published
         uses: SebRollen/toml-action@e6b4093b7c0220574cc9b6279f3be8bc850f88f6
         id: cargo-toml-publish
         with:
           file: Cargo.toml
           field: 'package.publish'
+
+      - name: Download artifacts
+        id: download-artifacts
+        if: needs.build.outputs.artifact
+        uses: actions/download-artifact@v3
+        with:
+          path:
+            ${{ runner.temp }}/artifacts
 
       - name: Log into crates.io
         if: steps.cargo-toml-publish.outputs.value != 'false' && github.event_name != 'pull_request'
@@ -272,9 +273,8 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           draft: ${{ !startsWith(github.ref, 'refs/tags/v') }}
-          fail_on_unmatched_files: true
           files: |
-            artifacts/*/*
+            ${{ steps.download-artifacts.outputs.download-path }}/*/*
 
       - name: Publish crate
         if: steps.cargo-toml-publish.outputs.value != 'false'
