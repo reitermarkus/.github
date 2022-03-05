@@ -74,34 +74,44 @@ jobs:
 
       - name: Generate test matrix
         run: |
-          set -o pipefail
-
           if [[ -n "${target}" ]]; then
-            test_matrix='
+            test_matrix="
               {
-                "os": [
-                  "ubuntu-latest"
-                ]
+                \"include\": [{
+                  \"os\": \"ubuntu-latest\",
+                  \"target\": $(jq -R <<< "${target}"),
+                  \"test-args\": $(jq -R <<< "${test_args} --target ${target}"),
+                  \"use-cross\": true
+                }]
               }
-            '
+            "
           else
             test_matrix='
               {
-                "os": [
-                  "ubuntu-latest",
-                  "macos-latest"
+                "include": [
+                  {
+                    "os": "ubuntu-latest",
+                    "target": "x86_64-unknown-linux-gnu"
+                  },
+                  {
+                    "os": "macos-latest",
+                    "target": "x86_64-apple-darwin"
+                  }
                 ]
               }
             '
           fi
 
+          jq -C <<< "${test_matrix}"
+
           echo "::set-output name=test-matrix::$(jq -c <<< "${test_matrix}")"
         env:
           target: ${{ steps.cargo-target.outputs.value }}
+          test_args: ${{ inputs.test-args }}
         id: test-matrix
 
   test:
-    name: test (${{ needs.lint.outputs.target || matrix.os }})
+    name: test (${{ needs.lint.outputs.target || matrix.target }})
     runs-on: ${{ matrix.os }}
     needs: lint
     strategy:
@@ -125,27 +135,29 @@ jobs:
         with:
           command: test
           args: >
-            --no-fail-fast ${{ inputs.test-args }} --no-default-features
-            ${{ needs.lint.outputs.target && '--target' }} ${{ needs.lint.outputs.target != '' }}
-          use-cross: ${{ needs.lint.outputs.target != '' }}
+            --no-fail-fast
+            ${{ matrix.test-args }}
+            --no-default-features
+          use-cross: ${{ matrix.use-cross }}
 
       - name: Run tests with default features
         uses: actions-rs/cargo@v1
         with:
           command: test
           args: >
-            --no-fail-fast ${{ inputs.test-args }}
-            ${{ needs.lint.outputs.target && '--target' }} ${{ needs.lint.outputs.target != '' }}
-          use-cross: ${{ needs.lint.outputs.target != '' }}
+            --no-fail-fast
+            ${{ matrix.test-args }}
+          use-cross: ${{ matrix.use-cross }}
 
       - name: Run tests with all features
         uses: actions-rs/cargo@v1
         with:
           command: test
           args: >
-            --no-fail-fast ${{ inputs.test-args }} --all-features
-            ${{ needs.lint.outputs.target && '--target' }} ${{ needs.lint.outputs.target != '' }}
-          use-cross: ${{ needs.lint.outputs.target != '' }}
+            --no-fail-fast
+            ${{ matrix.test-args }}
+            --all-features
+          use-cross: ${{ matrix.use-cross }}
 
   publish:
     runs-on: ubuntu-latest
