@@ -9,6 +9,16 @@ on:
         description: 'Cargo test arguments'
         default: '--workspace'
         type: string
+      test-matrix:
+        description: 'Test matrix in JSON'
+        default: |
+          {
+            "os": [
+              "ubuntu-latest",
+              "macos-latest"
+            ]
+          }
+        type: string
     secrets:
       CRATESIO_TOKEN:
         required: false
@@ -50,10 +60,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     needs: lint
     strategy:
-      matrix:
-        os:
-          - ubuntu-latest
-          - macos-latest
+      matrix: ${{ fromJSON(inputs.test-matrix) }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v3
