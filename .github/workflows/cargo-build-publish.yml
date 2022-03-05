@@ -11,13 +11,6 @@ on:
         type: string
       test-matrix:
         description: 'Test matrix in JSON'
-        default: |
-          {
-            "os": [
-              "ubuntu-latest",
-              "macos-latest"
-            ]
-          }
         type: string
     secrets:
       CRATESIO_TOKEN:
@@ -32,6 +25,7 @@ jobs:
   lint:
     outputs:
       target: ${{ steps.cargo-target.outputs.value }}
+      test-matrix: ${{ steps.test-matrix.outputs.test-matrix }}
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
@@ -78,11 +72,39 @@ jobs:
           token: ${{ github.token }}
           args: -- -D warnings
 
+      - name: Generate test matrix
+        run: |
+          set -o pipefail
+
+          if [[ -n "${target}" ]]; then
+            test_matrix='
+              {
+                "os": [
+                  "ubuntu-latest"
+                ]
+              }
+            '
+          else
+            test_matrix='
+              {
+                "os": [
+                  "ubuntu-latest",
+                  "macos-latest"
+                ]
+              }
+            '
+          fi
+
+          echo "::set-output name=test-matrix::$(jq -c <<< "${test_matrix}")"
+        env:
+          target: ${{ steps.cargo-target.outputs.value }}
+        id: test-matrix
+
   test:
     runs-on: ${{ matrix.os }}
     needs: lint
     strategy:
-      matrix: ${{ fromJSON(inputs.test-matrix) }}
+      matrix: ${{ fromJSON(needs.lint.outputs.test-matrix) }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v3
@@ -101,19 +123,28 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: test
-          args: --no-fail-fast ${{ inputs.test-args }} --no-default-features
+          args: >
+            --no-fail-fast ${{ inputs.test-args }} --no-default-features
+            ${{ needs.lint.outputs.target && '--target' }} ${{ needs.lint.outputs.target != '' }}
+          use-cross: ${{ needs.lint.outputs.target != '' }}
 
       - name: Run tests with default features
         uses: actions-rs/cargo@v1
         with:
           command: test
-          args: --no-fail-fast ${{ inputs.test-args }}
+          args: >
+            --no-fail-fast ${{ inputs.test-args }}
+            ${{ needs.lint.outputs.target && '--target' }} ${{ needs.lint.outputs.target != '' }}
+          use-cross: ${{ needs.lint.outputs.target != '' }}
 
       - name: Run tests with all features
         uses: actions-rs/cargo@v1
         with:
           command: test
-          args: --no-fail-fast ${{ inputs.test-args }} --all-features
+          args: >
+            --no-fail-fast ${{ inputs.test-args }} --all-features
+            ${{ needs.lint.outputs.target && '--target' }} ${{ needs.lint.outputs.target != '' }}
+          use-cross: ${{ needs.lint.outputs.target != '' }}
 
   publish:
     runs-on: ubuntu-latest
