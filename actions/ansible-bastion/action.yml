@@ -1,0 +1,43 @@
+inputs:
+  key:
+    description: 'Bastion SSH key'
+    required: true
+    type: string
+  host:
+    description: 'Bastion host'
+    required: true
+    type: string
+
+runs:
+  using: composite
+  steps:
+    - name: Scan SSH keys for bastion host
+      run: |
+        echo 'KNOWN_HOSTS<<EOF' >> "${GITHUB_ENV}"
+        ssh-keyscan -H "${host}" >> "${GITHUB_ENV}"
+        echo 'EOF' >> "${GITHUB_ENV}"
+      shell: bash
+      env:
+        host: ${{ inputs.host }}
+
+    - name: Install SSH key for bastion host
+      uses: shimataro/ssh-key-action@v2
+      with:
+        key: ${{ inputs.key }}
+        name: ansible_bastion_rsa
+        known_hosts: |
+          ${{ env.KNOWN_HOSTS }}
+        config: |
+          Host bastion
+            HostName ${{ inputs.host }}
+            User root
+            IdentityFile ~/.ssh/ansible_bastion_rsa
+
+    - name: Test connection to bastion
+      run: ssh bastion true
+      shell: bash
+
+    - name: Configure Ansible to use bastion host
+      run: |
+        echo 'ANSIBLE_SSH_COMMON_ARGS=-i ~/.ssh/ansible_bastion_rsa -o StrictHostKeyChecking=no -o ProxyJump=bastion' >> "${GITHUB_ENV}"
+      shell: bash

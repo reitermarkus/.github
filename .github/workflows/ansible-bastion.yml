@@ -1,0 +1,21 @@
+on: [push]
+
+name: Ansible Bastion
+
+jobs:
+  ansible-bastion:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Configure Ansible bastion host
+        uses: reitermarkus/.github/actions/ansible-bastion@main
+        with:
+          host: ${{ secrets.ANSIBLE_BASTION_HOST }}
+          key: ${{ secrets.ANSIBLE_BASTION_KEY }}
+
+      - name: Run Ansible
+        run: |
+          ansible opnsense -i inventory.yml -a 'hostname -f'
+
