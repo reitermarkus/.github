@@ -15,7 +15,7 @@
     }, 
     {
       "matchDatasources": ["crate"],
-      "matchSourceUrlPrefixes": ["https://github.com/RustCrypto/"],
+      "matchPackageNames": ["cipher", "aes", "aes-gcm"],
       "groupName": "crypto crates",
       "groupSlug": "rust-crypto"
     }
