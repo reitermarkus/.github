@@ -1,0 +1,137 @@
+on:
+  push:
+    paths:
+      - '.github/workflows/repository-settings.yml'
+  workflow_dispatch:
+  schedule:
+    - cron: '23 5 * * 1'
+
+name: Configure Repository Settings
+
+env:
+  REPOSITORIES_QUERY: |
+    query ($endCursor: String) {
+      viewer {
+        repositories(first: 100, after: $endCursor) {
+          nodes {
+            nameWithOwner
+          }
+          pageInfo {
+            hasNextPage
+            endCursor
+          }
+        }
+      }
+    }
+
+jobs:
+  repository-settings:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Get repositories
+        uses: actions/github-script@v6
+        id: repositories
+        with:
+          github-token: ${{ secrets.GH_TOKEN }}
+          script: |
+            const query = `query ($endCursor: String) {
+              viewer {
+                repositories(first: 100, after: $endCursor, ownerAffiliations: [OWNER]) {
+                  nodes {
+                    nameWithOwner
+                    isArchived
+                  }
+                  pageInfo {
+                    hasNextPage
+                    endCursor
+                  }
+                }
+              }
+            }`
+
+            const variables = {}
+            const repositoryNames = []
+
+            while (true) {
+              const result = await github.graphql(query, variables)
+              const repositories = result.viewer.repositories
+              const pageInfo = repositories.pageInfo
+
+              const names = repositories.nodes
+                .filter(n => !n.isArchived)
+                .map(n => n.nameWithOwner)
+              repositoryNames.push(...names)
+
+              if (pageInfo.hasNextPage) {
+                variables.endCursor = pageInfo.endCursor
+              } else {
+                break
+              }
+            }
+
+            core.info(`Found ${repositoryNames.length} repositories: ${repositoryNames.join("\n")}`)
+            return repositoryNames.join("\n")
+          result-encoding: string
+      - name: Update repository settings
+        uses: actions/github-script@v6
+        id: repository-settings
+        with:
+          github-token: ${{ secrets.GH_TOKEN }}
+          script: |
+            const repositories = core.getMultilineInput('repositories')
+            if (repositories.length === 0) {
+              core.warning(`No repositories specified.`)
+              return
+            }
+
+            const INPUTS = [
+              'has_issues',
+              'has_projects',
+              'has_wiki',
+              'is_template',
+              'allow_squash_merge',
+              'allow_merge_commit',
+              'allow_rebase_merge',
+              'allow_auto_merge',
+              'delete_branch_on_merge',
+            ]
+
+            const settings = {}
+
+            for (const input of INPUTS) {
+              let value = core.getInput(input)
+
+              if (value === '') {
+                continue
+              } else {
+                value = core.getBooleanInput(input)
+                settings[input] = value
+              }
+            }
+
+            core.info(`Settings: ${JSON.stringify(settings)}`)
+
+            for (const repository of repositories) {
+              core.info(`Updating settings for repository ${repository}.`)
+              const [owner, repo] = repository.split('/', 2)
+
+              const dryRun = false
+              if (dryRun) {
+                continue
+              }
+
+              await github.rest.repos.update({
+                owner,
+                repo,
+                ...settings,
+              })
+            }
+          repositories: |
+            ${{ steps.repositories.outputs.result }}
+          # repositories: |
+          #   reitermarkus/.github
+          delete_branch_on_merge: true
+          allow_auto_merge: true
