@@ -7,17 +7,19 @@
   ],
   "packageRules": [
     {
-      "datasources": [
-        "repology"
-      ],
-      "packagePatterns": [
-        "^alpine_\\d+_\\d+/"
-      ],
+      "matchDatasources": ["repology"],
+      "matchPackagePatterns": ["^alpine_\\d+_\\d+/"],
       "separateMajorMinor": false,
       "groupName": "alpine packages",
       "groupSlug": "alpine"
+    }, 
+    {
+      "matchDatasources": ["crate"],
+      "matchPackageNames": ["cipher", "aes", "aes-gcm"],
+      "groupName": "RustCrypto",
+      "groupSlug": "rust-crypto"
     }
-  ],
+  ]
   "regexManagers": [
     {
       "description": "Update Alpine packages in Dockerfiles",
