@@ -19,7 +19,7 @@
       "groupName": "crypto crates",
       "groupSlug": "rust-crypto"
     }
-  ]
+  ],
   "regexManagers": [
     {
       "description": "Update Alpine packages in Dockerfiles",
