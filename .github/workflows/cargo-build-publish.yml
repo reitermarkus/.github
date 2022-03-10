@@ -3,7 +3,7 @@ on:
     inputs:
       toolchain:
         description: 'Rust toolchain'
-        default: 'stable'
+        default: ''
         type: string
       test-args:
         description: 'Cargo test arguments'
@@ -36,24 +36,63 @@ jobs:
             cargo_config=".cargo/config"
           fi
 
-          echo "::set-output name=cargo-config::${cargo_config}"
+          if [[ -n "${cargo_config}" ]]; then
+            echo "::set-output name=cargo-config::${cargo_config}"
+          fi
         id: cargo-config
 
       - name: Get target
         uses: SebRollen/toml-action@e6b4093b7c0220574cc9b6279f3be8bc850f88f6
-        if: ${{ steps.cargo-config.outputs.cargo-config != '' }}
+        if: steps.cargo-config.outputs.cargo-config
         id: cargo-target
         with:
           file: ${{ steps.cargo-config.outputs.cargo-config }}
           field: 'build.target'
 
+      - name: Get toolchain
+        id: toolchain
+        run: |
+          if [[ -z "${toolchain}" ]]; then
+            if [[ -f rust-toolchain ]]; then
+              toolchain="$(cat rust-toolchain)"
+            fi
+          fi
+
+          if [[ "${target}" =~ xtensa* ]]; then
+            echo "Installing Xtensa toolchain …"
+            curl -fSsL 'https://raw.githubusercontent.com/esp-rs/rust-build/HEAD/install-rust-toolchain.sh' | \
+              bash -s -- --extra-crates ldproxy --export-file ~/esp-rust.sh
+
+            eval "$(sed 's/export /echo /' ~/esp-rust.sh)" >> "${GITHUB_ENV}"
+            cat "${GITHUB_ENV}"
+
+            components=''
+            target=''
+          fi
+
+          if [[ -n "${toolchain}" ]]; then
+            echo "::set-output name=toolchain::${toolchain}"
+          fi
+
+          if [[ -n "${components}" ]]; then
+            echo "::set-output name=toolchain::${components}"
+          fi
+
+          if [[ -n "${target}" ]]; then
+            echo "::set-output name=toolchain::${target}"
+          fi
+        env:
+          toolchain: ${{ inputs.toolchain }}
+          components: 'clippy'
+          target: ${{ steps.cargo-target.outputs.value }}
+
       - name: Install toolchain
         uses: actions-rs/toolchain@v1
         with:
-          toolchain: stable
+          toolchain: ${{ steps.toolchain.outputs.toolchain }}
           override: true
-          components: clippy
-          target: ${{ steps.cargo-target.outputs.value }}
+          components: ${{ steps.toolchain.outputs.components }}
+          target: ${{ steps.toolchain.outputs.target }}
 
       - name: Set up cache
         uses: Swatinem/rust-cache@f8f67b7515e98e4ac991ccb5c11240861e0f712b
