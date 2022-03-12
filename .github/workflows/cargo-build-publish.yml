@@ -309,7 +309,11 @@ jobs:
           args: -- ${{ secrets.CRATESIO_TOKEN }}
 
       - name: Upload GitHub release artifacts
-        if: needs.build.outputs.artifact != '' && github.event_name != 'pull_request'
+        if: >
+          needs.build.outputs.artifact != '' && github.event_name == 'push' && (
+            github.ref == format('refs/heads/{0}', github.event.repository.default_branch) ||
+            startsWith(github.ref, 'refs/tags/v')
+          )
         uses: softprops/action-gh-release@v1
         with:
           draft: ${{ !startsWith(github.ref, 'refs/tags/v') }}
