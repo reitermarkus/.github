@@ -52,6 +52,9 @@ runs:
         images: ${{ inputs.registry }}/${{ inputs.image-name }}
         tags: |
           type=schedule,pattern=${{ github.ref_name }}
+          type=ref,event=branch
+          type=ref,event=tag
+          type=ref,event=pr
 
     - name: Build and push Docker image
       uses: docker/build-push-action@v2
