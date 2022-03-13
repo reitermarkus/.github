@@ -50,6 +50,8 @@ runs:
       uses: docker/metadata-action@v3
       with:
         images: ${{ inputs.registry }}/${{ inputs.image-name }}
+        tags: |
+          type=schedule,pattern=${{ github.ref_name }}
 
     - name: Build and push Docker image
       uses: docker/build-push-action@v2
