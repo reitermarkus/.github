@@ -21,8 +21,6 @@ on:
       password:
         description: 'Password for Docker registry'
 
-name: CI
-
 jobs:
   lint:
     runs-on: ubuntu-latest
