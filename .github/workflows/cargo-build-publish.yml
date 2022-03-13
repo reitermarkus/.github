@@ -79,7 +79,7 @@ jobs:
           fi
 
           if [[ -n "${target}" ]]; then
-            echo "::set-output name=toolchain::${target}"
+            echo "::set-output name=target::${target}"
           fi
         env:
           toolchain: ${{ inputs.toolchain }}
