@@ -13,14 +13,13 @@ on:
         description: 'Username for Docker registry'
         default: '${{ github.actor }}'
         type: string
-      password:
-        description: 'Password for Docker registry'
-        default: '${{ github.token }}'
-        type: string
       platforms:
         description: 'Platforms to build for'
         default: 'linux/amd64,linux/arm64'
         type: string
+    secrets:
+      password:
+        description: 'Password for Docker registry'
 
 name: CI
 
@@ -53,6 +52,6 @@ jobs:
           registry: ${{ inputs.registry }}
           image-name: ${{ inputs.image-name }}
           username: ${{ inputs.username }}
-          password: ${{ inputs.password || github.token }}
+          password: ${{ secrets.password || github.token }}
           platforms: ${{ inputs.platforms }}
         id: build-push
