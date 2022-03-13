@@ -55,6 +55,8 @@ jobs:
           if [[ -z "${toolchain}" ]]; then
             if [[ -f rust-toolchain ]]; then
               toolchain="$(cat rust-toolchain)"
+            else
+              toolchain='stable'
             fi
           fi
 
