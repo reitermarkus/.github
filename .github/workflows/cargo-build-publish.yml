@@ -116,26 +116,29 @@ jobs:
       - name: Generate build/test matrix
         run: |
           if [[ -n "${target}" ]]; then
-            test_matrix="
+            test_matrix='
               {
-                \"include\": [{
-                  \"os\": \"ubuntu-latest\",
-                  \"target\": $(jq -R <<< "${target}"),
-                  \"test-args\": $(jq -R <<< "${test_args} --target ${target}"),
-                  \"use-cross\": true
+                "include": [{
+                  "os": "ubuntu-latest",
+                  "toolchain": env.toolchain,
+                  "target": env.target,
+                  "test-args": env.test_args + " --target " + env.target,
+                  "use-cross": true
                 }]
               }
-            "
+            '
           else
             test_matrix='
               {
                 "include": [
                   {
                     "os": "ubuntu-latest",
+                    "toolchain": env.toolchain,
                     "target": "x86_64-unknown-linux-gnu"
                   },
                   {
                     "os": "macos-latest",
+                    "toolchain": env.toolchain,
                     "target": "x86_64-apple-darwin"
                   }
                 ]
@@ -147,7 +150,8 @@ jobs:
 
           echo "::set-output name=matrix::$(jq -c <<< "${test_matrix}")"
         env:
-          target: ${{ steps.cargo-target.outputs.value }}
+          toolchain: ${{ steps.toolchain.outputs.toolchain }}
+          target: ${{ steps.toolchain.outputs.target }}
           test_args: ${{ inputs.test-args }}
         id: matrix
 
@@ -164,7 +168,7 @@ jobs:
       - name: Install toolchain
         uses: actions-rs/toolchain@v1
         with:
-          toolchain: ${{ inputs.toolchain }}
+          toolchain: ${{ matrix.toolchain }}
           override: true
           target: ${{ matrix.target }}
 
