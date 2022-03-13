@@ -137,7 +137,7 @@ jobs:
               --arg test_args "${test_args} --target ${target}" \
               '
                 map(.toolchain = (.toolchain // $toolchain) | .target = (.target // $target) | .["test-args"] = $test_args) |
-                  {"matrix": {"include": .}}
+                  {"include": .}
               ' \
               <<< "${test_matrix}"
           )"
