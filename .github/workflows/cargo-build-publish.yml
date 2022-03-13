@@ -75,7 +75,7 @@ jobs:
           fi
 
           if [[ -n "${components}" ]]; then
-            echo "::set-output name=toolchain::${components}"
+            echo "::set-output name=components::${components}"
           fi
 
           if [[ -n "${target}" ]]; then
