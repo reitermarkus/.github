@@ -144,7 +144,7 @@ jobs:
 
           jq -C <<< "${test_matrix}"
 
-          echo "::set-output name=matrix::$(jq -c <<< "${test_matrix}")"
+          echo "::set-output name=matrix::${test_matrix}"
         env:
           toolchain: ${{ steps.toolchain.outputs.toolchain }}
           target: ${{ steps.toolchain.outputs.target }}
