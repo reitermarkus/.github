@@ -26,7 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: hadolint/hadolint-action@v2.0.0
+      - uses: hadolint/hadolint-action@v2.1.0
         with:
           trusted-registries: docker.io
       - uses: azohra/shell-linter@v0.6.0
