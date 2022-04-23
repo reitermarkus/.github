@@ -4,7 +4,7 @@
     "config:base",
     ":preserveSemverRanges",
     "regexManagers:dockerfileVersions",
-    "helper:pinGitHubActionDigests",
+    "helper:pinGitHubActionDigests"
   ],
   "packageRules": [
     {
