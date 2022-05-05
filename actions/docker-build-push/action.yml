@@ -57,7 +57,7 @@ runs:
           type=ref,event=pr
 
     - name: Build and push Docker image
-      uses: docker/build-push-action@v2
+      uses: docker/build-push-action@e551b19e49efd4e98792db7592c17c09b89db8d8 # tag=v3
       with:
         platforms: ${{ inputs.platforms }}
         push: ${{ github.event_name != 'pull_request' }}
