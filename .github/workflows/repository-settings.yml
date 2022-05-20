@@ -29,10 +29,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
 
       - name: Get repositories
-        uses: actions/github-script@v6
+        uses: actions/github-script@7a5c598405937d486b0331594b5da2b14db670da # tag=v6
         id: repositories
         with:
           github-token: ${{ secrets.GH_TOKEN }}
@@ -76,7 +76,7 @@ jobs:
             return repositoryNames.join("\n")
           result-encoding: string
       - name: Update repository settings
-        uses: actions/github-script@v6
+        uses: actions/github-script@7a5c598405937d486b0331594b5da2b14db670da # tag=v6
         id: repository-settings
         with:
           github-token: ${{ secrets.GH_TOKEN }}
