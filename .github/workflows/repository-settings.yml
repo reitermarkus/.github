@@ -96,6 +96,7 @@ jobs:
               'allow_merge_commit',
               'allow_rebase_merge',
               'allow_auto_merge',
+              'allow_update_branch',
               'delete_branch_on_merge',
             ]
 
@@ -135,3 +136,4 @@ jobs:
           #   reitermarkus/.github
           delete_branch_on_merge: true
           allow_auto_merge: true
+          allow_update_branch: true
