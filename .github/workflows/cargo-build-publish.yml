@@ -98,7 +98,7 @@ jobs:
           target: ${{ steps.toolchain.outputs.target }}
 
       - name: Set up cache
-        uses: Swatinem/rust-cache@cb2cf0cc7c5198d3364b9630e2c3d457f160790c
+        uses: Swatinem/rust-cache@0497f9301fdb1aa549307271c6717f8cb280b838
 
       - name: Run cargo check
         uses: actions-rs/cargo@844f36862e911db73fe0815f00a4a2602c279505 # tag=v1
@@ -172,7 +172,7 @@ jobs:
           target: ${{ matrix.target }}
 
       - name: Set up cache
-        uses: Swatinem/rust-cache@cb2cf0cc7c5198d3364b9630e2c3d457f160790c
+        uses: Swatinem/rust-cache@0497f9301fdb1aa549307271c6717f8cb280b838
 
       - name: Run tests without default features
         uses: actions-rs/cargo@844f36862e911db73fe0815f00a4a2602c279505 # tag=v1
@@ -223,7 +223,7 @@ jobs:
           target: ${{ matrix.target }}
 
       - name: Set up cache
-        uses: Swatinem/rust-cache@cb2cf0cc7c5198d3364b9630e2c3d457f160790c
+        uses: Swatinem/rust-cache@0497f9301fdb1aa549307271c6717f8cb280b838
 
       - name: Build with all features
         uses: actions-rs/cargo@844f36862e911db73fe0815f00a4a2602c279505 # tag=v1
@@ -289,7 +289,7 @@ jobs:
           override: true
 
       - name: Set up cache
-        uses: Swatinem/rust-cache@cb2cf0cc7c5198d3364b9630e2c3d457f160790c
+        uses: Swatinem/rust-cache@0497f9301fdb1aa549307271c6717f8cb280b838
 
       - name: Check if crate should be published
         uses: SebRollen/toml-action@e6b4093b7c0220574cc9b6279f3be8bc850f88f6
