@@ -18,6 +18,7 @@ name: CI
 env:
   CARGO_TERM_COLOR: always
   RUST_BACKTRACE: '1'
+  CROSS_CONTAINER_UID: '0'
 
 jobs:
   lint:
