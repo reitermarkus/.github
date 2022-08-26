@@ -32,7 +32,7 @@ jobs:
         uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
 
       - name: Get repositories
-        uses: actions/github-script@d50f485531ba88479582bc2da03ff424389af5c1 # tag=v6
+        uses: actions/github-script@c713e510dbd7d213d92d41b7a7805a986f4c5c66 # tag=v6
         id: repositories
         with:
           github-token: ${{ secrets.GH_TOKEN }}
@@ -76,7 +76,7 @@ jobs:
             return repositoryNames.join("\n")
           result-encoding: string
       - name: Update repository settings
-        uses: actions/github-script@d50f485531ba88479582bc2da03ff424389af5c1 # tag=v6
+        uses: actions/github-script@c713e510dbd7d213d92d41b7a7805a986f4c5c66 # tag=v6
         id: repository-settings
         with:
           github-token: ${{ secrets.GH_TOKEN }}
