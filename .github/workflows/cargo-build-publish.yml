@@ -23,6 +23,27 @@ env:
   CROSS_DEBUG: '1'
 
 jobs:
+  fmt:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
+    
+      - name: Install toolchain
+        uses: actions-rs/toolchain@16499b5e05bf2e26879000db0c1d13f7e13fa3af # tag=v1
+        with:
+          toolchain: nightly
+          override: true
+          components: fmt
+
+      - name: Set up cache
+        uses: Swatinem/rust-cache@6720f05bc48b77f96918929a9019fb2203ff71f8 # tag=v2.0.0
+
+      - name: Run cargo fmt
+        uses: actions-rs/cargo@844f36862e911db73fe0815f00a4a2602c279505 # tag=v1
+        with:
+          command: fmt -- --check
+
   lint:
     outputs:
       toolchain: ${{ steps.toolchain.outputs.toolchain }}
@@ -211,7 +232,7 @@ jobs:
     outputs:
       artifact: ${{ steps.artifact.outputs.name }}
     runs-on: ${{ matrix.os }}
-    needs: lint
+    needs: [fmt, lint]
     strategy:
       matrix: ${{ fromJSON(needs.lint.outputs.matrix) }}
     steps:
