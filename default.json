@@ -13,7 +13,7 @@
       "separateMajorMinor": false,
       "groupName": "alpine packages",
       "groupSlug": "alpine"
-    }, 
+    },
     {
       "matchDatasources": ["crate"],
       "matchPackageNames": ["cipher", "aes", "aes-gcm"],
@@ -35,6 +35,16 @@
       "depNameTemplate": "alpine_{{alpineMajor}}_{{alpineMinor}}/{{depName}}",
       "autoReplaceStringTemplate": "{{{depName}}}{{#unless isPin}}~{{/unless}}={{{newValue}}}",
       "versioningTemplate": "loose"
+    },
+    {
+      "description": "Update raw GitHub URLs",
+      "fileMatch": [".+\\.ya?ml$"],
+      "matchStrings": [
+        "https:\\/\\/raw\\.githubusercontent\\.com\\/(?<depName>[\\w\\d\\-_]+\\/[\\w\\d\\-_]+)\\/(?<currentValue>[\\w\\d\\.\\-_]+)\\/.*",
+        "https:\\/\\/github\\.com\\/(?<depName>[\\w\\d\\-_]+\\/[\\w\\d\\-_]+)\\/raw\\/(?<currentValue>[\\w\\d\\.\\-_]+)\\/.*"
+      ],
+      "datasourceTemplate": "github-releases",
+      "versioningTemplate": "semver"
     }
   ]
 }
