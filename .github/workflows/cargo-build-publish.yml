@@ -68,7 +68,7 @@ jobs:
         id: cargo-config
 
       - name: Get target
-        uses: SebRollen/toml-action@2bd04b06a3ebc3e6a3eb6060de115710cad16cd6
+        uses: SebRollen/toml-action@9062fbef52816d61278d24ce53c8070440e1e8dd
         if: steps.cargo-config.outputs.cargo-config
         id: cargo-target
         with:
@@ -317,7 +317,7 @@ jobs:
         uses: Swatinem/rust-cache@6fd3edff6979b79f87531400ad694fb7f2c84b1f # v2.2.1
 
       - name: Check if crate should be published
-        uses: SebRollen/toml-action@2bd04b06a3ebc3e6a3eb6060de115710cad16cd6
+        uses: SebRollen/toml-action@9062fbef52816d61278d24ce53c8070440e1e8dd
         id: cargo-toml-publish
         with:
           file: Cargo.toml
