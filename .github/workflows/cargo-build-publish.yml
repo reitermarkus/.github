@@ -58,7 +58,7 @@ jobs:
           fi
 
           if [[ -n "${cargo_config}" ]]; then
-            echo "::set-output name=cargo-config::${cargo_config}"
+            echo "cargo-config=${cargo_config}" >> "${GITHUB_OUTPUT}"
           fi
         id: cargo-config
 
@@ -94,15 +94,15 @@ jobs:
           fi
 
           if [[ -n "${toolchain}" ]]; then
-            echo "::set-output name=toolchain::${toolchain}"
+            echo "toolchain=${toolchain}" >> "${GITHUB_OUTPUT}"
           fi
 
           if [[ -n "${components}" ]]; then
-            echo "::set-output name=components::${components}"
+            echo "components=${components}" >> "${GITHUB_OUTPUT}"
           fi
 
           if [[ -n "${target}" ]]; then
-            echo "::set-output name=target::${target}"
+            echo "target=${target}" >> "${GITHUB_OUTPUT}"
           fi
         env:
           toolchain: ${{ inputs.toolchain }}
@@ -158,7 +158,7 @@ jobs:
 
           jq -C <<< "${test_matrix}"
 
-          echo "::set-output name=matrix::${test_matrix}"
+          echo "matrix=${test_matrix}" >> "${GITHUB_OUTPUT}"
         env:
           toolchain: ${{ steps.toolchain.outputs.toolchain }}
           target: ${{ steps.toolchain.outputs.target }}
@@ -244,8 +244,8 @@ jobs:
           tar -tf "${artifact_path}"
           ls -al "${artifact_path}"
 
-          echo "::set-output name=name::${artifact_name}"
-          echo "::set-output name=path::${artifact_path}"
+          echo "name=${artifact_name}" >> "${GITHUB_OUTPUT}"
+          echo "path=${artifact_path}" >> "${GITHUB_OUTPUT}"
         env:
           target: ${{ matrix.target }}
 
