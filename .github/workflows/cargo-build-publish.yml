@@ -289,7 +289,7 @@ jobs:
 
       - name: Log into crates.io
         if: steps.cargo-toml-publish.outputs.value != 'false' && github.event_name != 'pull_request'
-        run: cargo login -- ${{ secrets.CRATESIO_TOKEN }}
+        run: cargo login ${{ secrets.CRATESIO_TOKEN }}
 
       - name: Upload GitHub release artifacts
         if: >
