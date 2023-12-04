@@ -30,20 +30,15 @@ jobs:
         uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
     
       - name: Install toolchain
-        uses: actions-rs/toolchain@16499b5e05bf2e26879000db0c1d13f7e13fa3af # tag=v1
+        uses: dtolnay/rust-toolchain@nightly
         with:
-          toolchain: nightly
-          override: true
           components: rustfmt
 
       - name: Set up cache
         uses: Swatinem/rust-cache@3cf7f8cc28d1b4e7d01e3783be10a97d55d483c8 # v2.7.1
 
       - name: Run cargo fmt
-        uses: actions-rs/cargo@844f36862e911db73fe0815f00a4a2602c279505 # tag=v1
-        with:
-          command: fmt
-          args: -- --check
+        run: cargo fmt -- --check
 
   lint:
     outputs:
@@ -115,29 +110,20 @@ jobs:
           target: ${{ steps.cargo-target.outputs.value }}
 
       - name: Install toolchain
-        uses: actions-rs/toolchain@16499b5e05bf2e26879000db0c1d13f7e13fa3af # tag=v1
+        uses: dtolnay/rust-toolchain@master
         with:
           toolchain: ${{ steps.toolchain.outputs.toolchain }}
-          override: true
           components: ${{ steps.toolchain.outputs.components }}
-          target: ${{ steps.toolchain.outputs.target }}
+          targets: ${{ steps.toolchain.outputs.target }}
 
       - name: Set up cache
         uses: Swatinem/rust-cache@3cf7f8cc28d1b4e7d01e3783be10a97d55d483c8 # v2.7.1
 
       - name: Run cargo check
-        uses: actions-rs/cargo@844f36862e911db73fe0815f00a4a2602c279505 # tag=v1
-        with:
-          command: check
-          args: ${{ (steps.cargo-target.outputs.value && format('--target {0}', steps.cargo-target.outputs.value)) || '' }}
-          use-cross: ${{ !!steps.cargo-target.outputs.value }}
+        run: cargo check ${{ (steps.cargo-target.outputs.value && format('--target {0}', steps.cargo-target.outputs.value)) || '' }}
 
       - name: Run cargo clippy
-        uses: actions-rs/clippy-check@b5b5f21f4797c02da247df37026fcd0a5024aa4d # tag=v1
-        with:
-          token: ${{ github.token }}
-          args: ${{ (steps.cargo-target.outputs.value && format('--target {0}', steps.cargo-target.outputs.value)) || '' }} -- -D warnings
-          use-cross: ${{ !!steps.cargo-target.outputs.value }}
+        run: cargo clippy ${{ (steps.cargo-target.outputs.value && format('--target {0}', steps.cargo-target.outputs.value)) || '' }} -- -D warnings
 
       - name: Generate build/test matrix
         run: |
@@ -190,43 +176,22 @@ jobs:
         uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
 
       - name: Install toolchain
-        uses: actions-rs/toolchain@16499b5e05bf2e26879000db0c1d13f7e13fa3af # tag=v1
+        uses: dtolnay/rust-toolchain@master
         with:
           toolchain: ${{ matrix.toolchain }}
-          override: true
-          target: ${{ matrix.target }}
+          targets: ${{ matrix.target }}
 
       - name: Set up cache
         uses: Swatinem/rust-cache@3cf7f8cc28d1b4e7d01e3783be10a97d55d483c8 # v2.7.1
 
       - name: Run tests without default features
-        uses: actions-rs/cargo@844f36862e911db73fe0815f00a4a2602c279505 # tag=v1
-        with:
-          command: test
-          args: >
-            --no-fail-fast
-            ${{ matrix.test-args }}
-            --no-default-features
-          use-cross: ${{ matrix.use-cross }}
+        run: cargo test --no-fail-fast ${{ matrix.test-args }} --no-default-features
 
       - name: Run tests with default features
-        uses: actions-rs/cargo@844f36862e911db73fe0815f00a4a2602c279505 # tag=v1
-        with:
-          command: test
-          args: >
-            --no-fail-fast
-            ${{ matrix.test-args }}
-          use-cross: ${{ matrix.use-cross }}
+        run: cargo test --no-fail-fast ${{ matrix.test-args }}
 
       - name: Run tests with all features
-        uses: actions-rs/cargo@844f36862e911db73fe0815f00a4a2602c279505 # tag=v1
-        with:
-          command: test
-          args: >
-            --no-fail-fast
-            ${{ matrix.test-args }}
-            --all-features
-          use-cross: ${{ matrix.use-cross }}
+        run: cargo test --no-fail-fast ${{ matrix.test-args }} --all-features
 
   build:
     name: build (${{ matrix.target }})
@@ -241,24 +206,16 @@ jobs:
         uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
 
       - name: Install toolchain
-        uses: actions-rs/toolchain@16499b5e05bf2e26879000db0c1d13f7e13fa3af # tag=v1
+        uses: dtolnay/rust-toolchain@master
         with:
           toolchain: ${{ matrix.toolchain }}
-          override: true
-          target: ${{ matrix.target }}
+          targets: ${{ matrix.target }}
 
       - name: Set up cache
         uses: Swatinem/rust-cache@3cf7f8cc28d1b4e7d01e3783be10a97d55d483c8 # v2.7.1
 
       - name: Build with all features
-        uses: actions-rs/cargo@844f36862e911db73fe0815f00a4a2602c279505 # tag=v1
-        with:
-          command: build
-          args: >
-            --release
-            --target ${{ matrix.target }}
-            --all-features
-          use-cross: ${{ matrix.use-cross }}
+        run: cargo build --release --target ${{ matrix.target }} --all-features
 
       - name: Archive artifacts
         id: artifact
@@ -308,10 +265,9 @@ jobs:
         uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
 
       - name: Install toolchain
-        uses: actions-rs/toolchain@16499b5e05bf2e26879000db0c1d13f7e13fa3af # tag=v1
+        uses: dtolnay/rust-toolchain@master
         with:
           toolchain: ${{ needs.lint.outputs.toolchain }}
-          override: true
 
       - name: Set up cache
         uses: Swatinem/rust-cache@3cf7f8cc28d1b4e7d01e3783be10a97d55d483c8 # v2.7.1
@@ -333,10 +289,7 @@ jobs:
 
       - name: Log into crates.io
         if: steps.cargo-toml-publish.outputs.value != 'false' && github.event_name != 'pull_request'
-        uses: actions-rs/cargo@844f36862e911db73fe0815f00a4a2602c279505 # tag=v1
-        with:
-          command: login
-          args: -- ${{ secrets.CRATESIO_TOKEN }}
+        run: cargo login -- ${{ secrets.CRATESIO_TOKEN }}
 
       - name: Upload GitHub release artifacts
         if: >
@@ -352,7 +305,4 @@ jobs:
 
       - name: Publish crate
         if: steps.cargo-toml-publish.outputs.value != 'false'
-        uses: actions-rs/cargo@844f36862e911db73fe0815f00a4a2602c279505 # tag=v1
-        with:
-          command: publish
-          args: ${{ !startsWith(github.ref, 'refs/tags/v') && '--dry-run' || '' }}
+        run: cargo publish ${{ !startsWith(github.ref, 'refs/tags/v') && '--dry-run' || '' }}
