@@ -35,7 +35,7 @@ jobs:
           components: rustfmt
 
       - name: Set up cache
-        uses: Swatinem/rust-cache@3cf7f8cc28d1b4e7d01e3783be10a97d55d483c8 # v2.7.1
+        uses: Swatinem/rust-cache@23bce251a8cd2ffc3c1075eaa2367cf899916d84 # v2.7.3
 
       - name: Run cargo fmt
         run: cargo fmt -- --check
@@ -117,7 +117,7 @@ jobs:
           targets: ${{ steps.toolchain.outputs.target }}
 
       - name: Set up cache
-        uses: Swatinem/rust-cache@3cf7f8cc28d1b4e7d01e3783be10a97d55d483c8 # v2.7.1
+        uses: Swatinem/rust-cache@23bce251a8cd2ffc3c1075eaa2367cf899916d84 # v2.7.3
 
       - name: Run cargo check
         run: cargo check ${{ (steps.cargo-target.outputs.value && format('--target {0}', steps.cargo-target.outputs.value)) || '' }}
@@ -182,7 +182,7 @@ jobs:
           targets: ${{ matrix.target }}
 
       - name: Set up cache
-        uses: Swatinem/rust-cache@3cf7f8cc28d1b4e7d01e3783be10a97d55d483c8 # v2.7.1
+        uses: Swatinem/rust-cache@23bce251a8cd2ffc3c1075eaa2367cf899916d84 # v2.7.3
 
       - name: Run tests without default features
         run: cargo test --no-fail-fast ${{ matrix.test-args }} --no-default-features
@@ -212,7 +212,7 @@ jobs:
           targets: ${{ matrix.target }}
 
       - name: Set up cache
-        uses: Swatinem/rust-cache@3cf7f8cc28d1b4e7d01e3783be10a97d55d483c8 # v2.7.1
+        uses: Swatinem/rust-cache@23bce251a8cd2ffc3c1075eaa2367cf899916d84 # v2.7.3
 
       - name: Build with all features
         run: cargo build --release --target ${{ matrix.target }} --all-features
@@ -270,7 +270,7 @@ jobs:
           toolchain: ${{ needs.lint.outputs.toolchain }}
 
       - name: Set up cache
-        uses: Swatinem/rust-cache@3cf7f8cc28d1b4e7d01e3783be10a97d55d483c8 # v2.7.1
+        uses: Swatinem/rust-cache@23bce251a8cd2ffc3c1075eaa2367cf899916d84 # v2.7.3
 
       - name: Check if crate should be published
         uses: SebRollen/toml-action@9062fbef52816d61278d24ce53c8070440e1e8dd
