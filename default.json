@@ -38,7 +38,7 @@
     },
     {
       "description": "Update raw GitHub URLs",
-      "fileMatch": [".+\\.ya?ml$"],
+      "fileMatch": [".+\\.(ya?ml|json5?)$"],
       "matchStrings": [
         "https:\\/\\/raw\\.githubusercontent\\.com\\/(?<depName>[\\w\\d\\-_]+\\/[\\w\\d\\-_]+)\\/(?<currentValue>[\\w\\d\\.\\-_]+)\\/.*",
         "https:\\/\\/github\\.com\\/(?<depName>[\\w\\d\\-_]+\\/[\\w\\d\\-_]+)\\/raw\\/(?<currentValue>[\\w\\d\\.\\-_]+)\\/.*"
