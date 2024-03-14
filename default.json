@@ -40,8 +40,8 @@
       "description": "Update raw GitHub URLs",
       "fileMatch": [".+\\.(ya?ml|json5?|toml)$"],
       "matchStrings": [
-        "https:\\/\\/raw\\.githubusercontent\\.com\\/(?<depName>[\\w\\d\\-_]+\\/[\\w\\d\\-_]+)\\/(?<currentValue>[\\w\\d\\.\\-_]+)\\/.*",
-        "https:\\/\\/github\\.com\\/(?<depName>[\\w\\d\\-_]+\\/[\\w\\d\\-_]+)\\/raw\\/(?<currentValue>[\\w\\d\\.\\-_]+)\\/.*"
+        "https:\\/\\/raw\\.githubusercontent\\.com\\/(?<depName>[^\\s/]+\\/[^\\s/]+)\\/(?<currentValue>[^\\s/]+)\\/.*",
+        "https:\\/\\/github\\.com\\/(?<depName>[^\\s/]+\\/[^\\s/]+)\\/raw\\/(?<currentValue>[^\\s/]+)\\/.*"
       ],
       "datasourceTemplate": "github-releases",
       "versioningTemplate": "semver"
