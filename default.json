@@ -43,7 +43,7 @@
         "https:\\/\\/raw\\.githubusercontent\\.com\\/(?<depName>[^\\s/]+\\/[^\\s/]+)\\/(?<currentValue>[^\\s/]+)\\/.*",
         "https:\\/\\/github\\.com\\/(?<depName>[^\\s/]+\\/[^\\s/]+)\\/raw\\/(?<currentValue>[^\\s/]+)\\/.*"
       ],
-      "datasourceTemplate": "github-releases",
+      "datasourceTemplate": "github-tags",
       "versioningTemplate": "semver"
     }
   ]
