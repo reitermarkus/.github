@@ -100,6 +100,7 @@ jobs:
           args: --target ${{ matrix.target}}
           toolchain: ${{ matrix.toolchain }}
           use-cross: ${{ matrix.use-cross }}
+          cross-version: main
 
       - name: Run cargo clippy
         uses: ClementTsang/cargo-action@v0.0.6
@@ -108,6 +109,7 @@ jobs:
           args: --target ${{ matrix.target}} -- -D warnings
           toolchain: ${{ matrix.toolchain }}
           use-cross: ${{ matrix.use-cross }}
+          cross-version: main
 
   test:
     name: test (${{ matrix.target }})
@@ -136,6 +138,7 @@ jobs:
           args: --no-fail-fast --target ${{ matrix.target }} --no-default-features
           toolchain: ${{ matrix.toolchain }}
           use-cross: ${{ matrix.use-cross }}
+          cross-version: main
 
       - name: Run tests with default features
         uses: ClementTsang/cargo-action@v0.0.6
@@ -144,6 +147,7 @@ jobs:
           args: --no-fail-fast --target ${{ matrix.target }}
           toolchain: ${{ matrix.toolchain }}
           use-cross: ${{ matrix.use-cross }}
+          cross-version: main
 
       - name: Run tests with all features
         uses: ClementTsang/cargo-action@v0.0.6
@@ -152,6 +156,7 @@ jobs:
           args: --no-fail-fast --target ${{ matrix.target }} --all-features
           toolchain: ${{ matrix.toolchain }}
           use-cross: ${{ matrix.use-cross }}
+          cross-version: main
 
   build:
     name: build (${{ matrix.target }})
@@ -182,6 +187,7 @@ jobs:
           args: --release --target ${{ matrix.target }} --all-features
           toolchain: ${{ matrix.toolchain }}
           use-cross: ${{ matrix.use-cross }}
+          cross-version: main
 
       - name: Archive artifacts
         id: artifact
