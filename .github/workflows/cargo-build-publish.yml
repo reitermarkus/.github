@@ -28,7 +28,7 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
-    
+
       - name: Install toolchain
         uses: dtolnay/rust-toolchain@nightly
         with:
@@ -40,47 +40,33 @@ jobs:
       - name: Run cargo fmt
         run: cargo fmt -- --check
 
-  lint:
-    outputs:
-      toolchain: ${{ steps.toolchain.outputs.toolchain }}
-      matrix: ${{ steps.matrix.outputs.matrix }}
+  generate-matrix:
     runs-on: ubuntu-latest
+    needs: fmt
+    outputs:
+      matrix: ${{ steps.generate-matrix.outputs.matrix }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
+      - name: Install toolchain
+        uses: dtolnay/rust-toolchain@stable
+      - uses: reitermarkus/rust-build-matrix@v1
+        id: generate-matrix
+
+  lint:
+    name: lint (${{ matrix.target }})
+    runs-on: ${{ matrix.os }}
+    needs: generate-matrix
+    strategy:
+      matrix:
+        include: ${{ fromJSON(needs.generate-matrix.outputs.matrix) }}
     steps:
       - name: Check out repository
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
 
-      - name: Check cargo config
+      - name: Get components
+        id: components
         run: |
-          if [[ -f .cargo/config.toml ]]; then
-            cargo_config=".cargo/config.toml"
-          elif [[ -f .cargo/config ]]; then
-            cargo_config=".cargo/config"
-          fi
-
-          if [[ -n "${cargo_config}" ]]; then
-            echo "cargo-config=${cargo_config}" >> "${GITHUB_OUTPUT}"
-          fi
-        id: cargo-config
-
-      - name: Get target
-        uses: SebRollen/toml-action@4ff8693875b20626a542c973265225d8e6df1c89
-        if: steps.cargo-config.outputs.cargo-config
-        id: cargo-target
-        with:
-          file: ${{ steps.cargo-config.outputs.cargo-config }}
-          field: 'build.target'
-
-      - name: Get toolchain
-        id: toolchain
-        run: |
-          if [[ -z "${toolchain}" ]]; then
-            if [[ -f rust-toolchain ]]; then
-              toolchain="$(cat rust-toolchain)"
-            else
-              toolchain='stable'
-            fi
-          fi
-
           if [[ "${target}" =~ xtensa* ]]; then
             echo "Installing Xtensa toolchain …"
             curl -fSsL 'https://raw.githubusercontent.com/esp-rs/rust-build/HEAD/install-rust-toolchain.sh' | \
@@ -90,87 +76,46 @@ jobs:
             cat "${GITHUB_ENV}"
 
             components=''
-            target=''
           fi
 
-          if [[ -n "${toolchain}" ]]; then
-            echo "toolchain=${toolchain}" >> "${GITHUB_OUTPUT}"
-          fi
-
-          if [[ -n "${components}" ]]; then
-            echo "components=${components}" >> "${GITHUB_OUTPUT}"
-          fi
-
-          if [[ -n "${target}" ]]; then
-            echo "target=${target}" >> "${GITHUB_OUTPUT}"
-          fi
+          echo "components=${components}" >> "${GITHUB_OUTPUT}"
         env:
-          toolchain: ${{ inputs.toolchain }}
           components: 'clippy'
-          target: ${{ steps.cargo-target.outputs.value }}
+          target: ${{ matrix.target }}
 
       - name: Install toolchain
         uses: dtolnay/rust-toolchain@master
         with:
-          toolchain: ${{ steps.toolchain.outputs.toolchain }}
-          components: ${{ steps.toolchain.outputs.components }}
-          targets: ${{ steps.toolchain.outputs.target }}
+          toolchain: ${{ matrix.toolchain }}
+          components: ${{ steps.components.outputs.components }}
+          targets: ${{ matrix.target }}
 
       - name: Set up cache
         uses: Swatinem/rust-cache@23bce251a8cd2ffc3c1075eaa2367cf899916d84 # v2.7.3
 
       - name: Run cargo check
-        run: cargo check ${{ (steps.cargo-target.outputs.value && format('--target {0}', steps.cargo-target.outputs.value)) || '' }}
+        uses: ClementTsang/cargo-action@v0.0.6
+        with:
+          command: check
+          args: --target ${{ matrix.target}}
+          toolchain: ${{ matrix.toolchain }}
+          use-cross: ${{ matrix.use-cross }}
 
       - name: Run cargo clippy
-        run: cargo clippy ${{ (steps.cargo-target.outputs.value && format('--target {0}', steps.cargo-target.outputs.value)) || '' }} -- -D warnings
-
-      - name: Generate build/test matrix
-        run: |
-          if [[ -n "${target}" ]]; then
-            test_matrix='[{
-              "os": "ubuntu-latest",
-              "use-cross": true
-            }]'
-            
-            test_args+=" --target ${target}"
-          else
-            test_matrix='[{
-              "os": "ubuntu-latest",
-              "target": "x86_64-unknown-linux-gnu"
-            }, {
-              "os": "macos-latest",
-              "target": "x86_64-apple-darwin"
-            }]'
-          fi
-          
-          test_matrix="$(
-            jq -c \
-              --arg toolchain "${toolchain}" \
-              --arg target "${target}" \
-              --arg test_args "${test_args}" \
-              '
-                map(.toolchain = (.toolchain // $toolchain) | .target = (.target // $target) | .["test-args"] = $test_args) |
-                  {"include": .}
-              ' \
-              <<< "${test_matrix}"
-          )"
-
-          jq -C <<< "${test_matrix}"
-
-          echo "matrix=${test_matrix}" >> "${GITHUB_OUTPUT}"
-        env:
-          toolchain: ${{ steps.toolchain.outputs.toolchain }}
-          target: ${{ steps.toolchain.outputs.target }}
-          test_args: ${{ inputs.test-args }}
-        id: matrix
+        uses: ClementTsang/cargo-action@v0.0.6
+        with:
+          command: clippy
+          args: --target ${{ matrix.target}} -- -D warnings
+          toolchain: ${{ matrix.toolchain }}
+          use-cross: ${{ matrix.use-cross }}
 
   test:
     name: test (${{ matrix.target }})
     runs-on: ${{ matrix.os }}
-    needs: lint
+    needs: [lint, generate-matrix]
     strategy:
-      matrix: ${{ fromJSON(needs.lint.outputs.matrix) }}
+      matrix:
+        include: ${{ fromJSON(needs.generate-matrix.outputs.matrix) }}
     steps:
       - name: Check out repository
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
@@ -185,22 +130,38 @@ jobs:
         uses: Swatinem/rust-cache@23bce251a8cd2ffc3c1075eaa2367cf899916d84 # v2.7.3
 
       - name: Run tests without default features
-        run: cargo test --no-fail-fast ${{ matrix.test-args }} --no-default-features
+        uses: ClementTsang/cargo-action@v0.0.6
+        with:
+          command: test
+          args: --no-fail-fast --target ${{ matrix.target }} --no-default-features
+          toolchain: ${{ matrix.toolchain }}
+          use-cross: ${{ matrix.use-cross }}
 
       - name: Run tests with default features
-        run: cargo test --no-fail-fast ${{ matrix.test-args }}
+        uses: ClementTsang/cargo-action@v0.0.6
+        with:
+          command: test
+          args: --no-fail-fast --target ${{ matrix.target }}
+          toolchain: ${{ matrix.toolchain }}
+          use-cross: ${{ matrix.use-cross }}
 
       - name: Run tests with all features
-        run: cargo test --no-fail-fast ${{ matrix.test-args }} --all-features
+        uses: ClementTsang/cargo-action@v0.0.6
+        with:
+          command: test
+          args: --no-fail-fast --target ${{ matrix.target }} --all-features
+          toolchain: ${{ matrix.toolchain }}
+          use-cross: ${{ matrix.use-cross }}
 
   build:
     name: build (${{ matrix.target }})
     outputs:
       artifact: ${{ steps.artifact.outputs.name }}
     runs-on: ${{ matrix.os }}
-    needs: [fmt, lint]
+    needs: [test, lint, generate-matrix]
     strategy:
-      matrix: ${{ fromJSON(needs.lint.outputs.matrix) }}
+      matrix:
+        include: ${{ fromJSON(needs.generate-matrix.outputs.matrix) }}
     steps:
       - name: Check out repository
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
@@ -215,7 +176,12 @@ jobs:
         uses: Swatinem/rust-cache@23bce251a8cd2ffc3c1075eaa2367cf899916d84 # v2.7.3
 
       - name: Build with all features
-        run: cargo build --release --target ${{ matrix.target }} --all-features
+        uses: ClementTsang/cargo-action@v0.0.6
+        with:
+          command: build
+          args: --release --target ${{ matrix.target }} --all-features
+          toolchain: ${{ matrix.toolchain }}
+          use-cross: ${{ matrix.use-cross }}
 
       - name: Archive artifacts
         id: artifact
@@ -265,9 +231,7 @@ jobs:
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
 
       - name: Install toolchain
-        uses: dtolnay/rust-toolchain@master
-        with:
-          toolchain: ${{ needs.lint.outputs.toolchain }}
+        uses: dtolnay/rust-toolchain@stable
 
       - name: Set up cache
         uses: Swatinem/rust-cache@23bce251a8cd2ffc3c1075eaa2367cf899916d84 # v2.7.3
