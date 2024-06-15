@@ -237,7 +237,7 @@ jobs:
         uses: Swatinem/rust-cache@23bce251a8cd2ffc3c1075eaa2367cf899916d84 # v2.7.3
 
       - name: Check if crate should be published
-        uses: SebRollen/toml-action@4ff8693875b20626a542c973265225d8e6df1c89
+        uses: SebRollen/toml-action@4cdab426d5e7838199ed25c199e8c0a1ce806671
         id: cargo-toml-publish
         with:
           file: Cargo.toml
