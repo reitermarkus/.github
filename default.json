@@ -37,11 +37,12 @@
       "versioningTemplate": "loose"
     },
     {
-      "description": "Update raw GitHub URLs",
-      "fileMatch": [".+\\.(ya?ml|json5?|toml)$"],
+      "description": "Update versioned GitHub URLs",
+      "fileMatch": [".+\\.(ya?ml|json5?|toml)(.j2)?$"],
       "matchStrings": [
         "https:\\/\\/raw\\.githubusercontent\\.com\\/(?<depName>[^\\s\\/]+\\/[^\\s\\/]+)\\/(?<currentValue>[^\\s\\/]+)\\/.*",
-        "https:\\/\\/github\\.com\\/(?<depName>[^\\s\\/]+\\/[^\\s\\/]+)\\/raw\\/(?<currentValue>[^\\s\\/]+)\\/.*"
+        "https:\\/\\/github\\.com\\/(?<depName>[^\\s\\/]+\\/[^\\s\\/]+)\\/raw\\/(?<currentValue>[^\\s\\/]+)\\/.*",
+        "https:\\/\\/github\\.com\\/(?<depName>[^\\s\\/]+\\/[^\\s\\/]+)\\/releases\\/download\\/(?<currentValue>[^\\s\\/]+)\\/.*"
       ],
       "datasourceTemplate": "github-releases",
       "versioningTemplate": "semver"
