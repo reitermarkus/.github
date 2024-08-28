@@ -5,10 +5,6 @@ on:
         description: Rust toolchain
         default: ''
         type: string
-      test-args:
-        description: Cargo test arguments
-        default: '--workspace'
-        type: string
     secrets:
       CRATESIO_TOKEN:
         required: false
