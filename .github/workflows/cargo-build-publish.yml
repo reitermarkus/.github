@@ -91,7 +91,7 @@ jobs:
           targets: ${{ matrix.target }}
 
       - name: Install Cargo All Features
-        uses: taiki-e/cache-cargo-install-action@v2
+        uses: taiki-e/cache-cargo-install-action@caa6f48d18d42462f9c30df89e2b4f71a42b7c2c # v2
         with:
           tool: cargo-all-features
 
@@ -134,7 +134,7 @@ jobs:
           targets: ${{ matrix.target }}
 
       - name: Install Cargo All Features
-        uses: taiki-e/cache-cargo-install-action@v2
+        uses: taiki-e/cache-cargo-install-action@caa6f48d18d42462f9c30df89e2b4f71a42b7c2c # v2
         with:
           tool: cargo-all-features
 
@@ -170,7 +170,7 @@ jobs:
           targets: ${{ matrix.target }}
 
       - name: Install Cargo All Features
-        uses: taiki-e/cache-cargo-install-action@v2
+        uses: taiki-e/cache-cargo-install-action@caa6f48d18d42462f9c30df89e2b4f71a42b7c2c # v2
         with:
           tool: cargo-all-features
 
