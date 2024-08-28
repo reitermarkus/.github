@@ -50,7 +50,7 @@ jobs:
         id: generate-matrix
 
   lint:
-    name: lint (${{ matrix.target }})
+    name: lint (${{ matrix.target }}${{ (matrix.features && format(', {0}', join(matrix.features, ','))) || '' }})
     runs-on: ${{ matrix.os }}
     needs: generate-matrix
     strategy:
@@ -93,7 +93,7 @@ jobs:
         uses: ClementTsang/cargo-action@a211c79cf22973eb590277586fbea20269ca3ca0 # v0.0.6
         with:
           command: check
-          args: --target ${{ matrix.target}}${{ (matrix.features && format(' --features {0}', matrix.features)) || '' }}
+          args: --target ${{ matrix.target}}${{ (matrix.features && format(' --features {0}', join(matrix.features, ','))) || '' }}
           toolchain: ${{ matrix.toolchain }}
           use-cross: ${{ matrix.use-cross }}
           cross-version: main
@@ -102,13 +102,13 @@ jobs:
         uses: ClementTsang/cargo-action@a211c79cf22973eb590277586fbea20269ca3ca0 # v0.0.6
         with:
           command: clippy
-          args: --target ${{ matrix.target}}${{ (matrix.features && format(' --features {0}', matrix.features)) || '' }} -- -D warnings
+          args: --target ${{ matrix.target}}${{ (matrix.features && format(' --features {0}', join(matrix.features, ','))) || '' }} -- -D warnings
           toolchain: ${{ matrix.toolchain }}
           use-cross: ${{ matrix.use-cross }}
           cross-version: main
 
   test:
-    name: test (${{ matrix.target }})
+    name: test (${{ matrix.target }}${{ (matrix.features && format(', {0}', join(matrix.features, ','))) || '' }})
     runs-on: ${{ matrix.os }}
     needs: [lint, generate-matrix]
     strategy:
@@ -131,7 +131,7 @@ jobs:
         uses: ClementTsang/cargo-action@a211c79cf22973eb590277586fbea20269ca3ca0 # v0.0.6
         with:
           command: test
-          args: --no-fail-fast --target ${{ matrix.target }} --no-default-features${{ (matrix.features && format(' --features {0}', matrix.features)) || '' }}
+          args: --no-fail-fast --target ${{ matrix.target }} --no-default-features${{ (matrix.features && format(' --features {0}', join(matrix.features, ','))) || '' }}
           toolchain: ${{ matrix.toolchain }}
           use-cross: ${{ matrix.use-cross }}
           cross-version: main
@@ -140,7 +140,7 @@ jobs:
         uses: ClementTsang/cargo-action@a211c79cf22973eb590277586fbea20269ca3ca0 # v0.0.6
         with:
           command: test
-          args: --no-fail-fast --target ${{ matrix.target }}${{ (matrix.features && format(' --features {0}', matrix.features)) || '' }}
+          args: --no-fail-fast --target ${{ matrix.target }}${{ (matrix.features && format(' --features {0}', join(matrix.features, ','))) || '' }}
           toolchain: ${{ matrix.toolchain }}
           use-cross: ${{ matrix.use-cross }}
           cross-version: main
@@ -156,7 +156,7 @@ jobs:
         if: ${{ !matrix.features }}
 
   build:
-    name: build (${{ matrix.target }})
+    name: build (${{ matrix.target }}${{ (matrix.features && format(', {0}', join(matrix.features, ','))) || '' }})
     outputs:
       artifact: ${{ steps.artifact.outputs.name }}
     runs-on: ${{ matrix.os }}
@@ -181,7 +181,7 @@ jobs:
         uses: ClementTsang/cargo-action@a211c79cf22973eb590277586fbea20269ca3ca0 # v0.0.6
         with:
           command: build
-          args: --release --target ${{ matrix.target }} --all-features
+          args: --release --target ${{ matrix.target }}${{ (matrix.features && format(' --features {0}', join(matrix.features, ','))) || ' --all-features' }}
           toolchain: ${{ matrix.toolchain }}
           use-cross: ${{ matrix.use-cross }}
           cross-version: main
