@@ -86,19 +86,14 @@ jobs:
           components: ${{ steps.components.outputs.components }}
           targets: ${{ matrix.target }}
 
-      - name: Install Cargo All Features
-        uses: taiki-e/cache-cargo-install-action@v2
-        with:
-          tool: cargo-all-features
-
       - name: Set up cache
         uses: Swatinem/rust-cache@23bce251a8cd2ffc3c1075eaa2367cf899916d84 # v2.7.3
 
       - name: Run cargo check
         uses: ClementTsang/cargo-action@a211c79cf22973eb590277586fbea20269ca3ca0 # v0.0.6
         with:
-          command: check-all-features
-          args: --target ${{ matrix.target}}
+          command: check
+          args: --target ${{ matrix.target}}${{ (matrix.features && format(' --features {0}', matrix.features) || '' }}
           toolchain: ${{ matrix.toolchain }}
           use-cross: ${{ matrix.use-cross }}
           cross-version: main
@@ -107,7 +102,7 @@ jobs:
         uses: ClementTsang/cargo-action@a211c79cf22973eb590277586fbea20269ca3ca0 # v0.0.6
         with:
           command: clippy
-          args: --target ${{ matrix.target}}
+          args: --target ${{ matrix.target}}${{ (matrix.features && format(' --features {0}', matrix.features) || '' }} -- -D warnings
           toolchain: ${{ matrix.toolchain }}
           use-cross: ${{ matrix.use-cross }}
           cross-version: main
@@ -129,22 +124,36 @@ jobs:
           toolchain: ${{ matrix.toolchain }}
           targets: ${{ matrix.target }}
 
-      - name: Install Cargo All Features
-        uses: taiki-e/cache-cargo-install-action@v2
-        with:
-          tool: cargo-all-features
-
       - name: Set up cache
         uses: Swatinem/rust-cache@23bce251a8cd2ffc3c1075eaa2367cf899916d84 # v2.7.3
 
-      - name: Run tests
+      - name: Run tests without default features
         uses: ClementTsang/cargo-action@a211c79cf22973eb590277586fbea20269ca3ca0 # v0.0.6
         with:
-          command: test-all-features
-          args: --no-fail-fast --target ${{ matrix.target }}
+          command: test
+          args: --no-fail-fast --target ${{ matrix.target }} --no-default-features${{ (matrix.features && format(' --features {0}', matrix.features) || '' }}
           toolchain: ${{ matrix.toolchain }}
           use-cross: ${{ matrix.use-cross }}
           cross-version: main
+
+      - name: Run tests with default features
+        uses: ClementTsang/cargo-action@a211c79cf22973eb590277586fbea20269ca3ca0 # v0.0.6
+        with:
+          command: test
+          args: --no-fail-fast --target ${{ matrix.target }}${{ (matrix.features && format(' --features {0}', matrix.features) || '' }}
+          toolchain: ${{ matrix.toolchain }}
+          use-cross: ${{ matrix.use-cross }}
+          cross-version: main
+
+      - name: Run tests with all features
+        uses: ClementTsang/cargo-action@a211c79cf22973eb590277586fbea20269ca3ca0 # v0.0.6
+        with:
+          command: test
+          args: --no-fail-fast --target ${{ matrix.target }} --all-features
+          toolchain: ${{ matrix.toolchain }}
+          use-cross: ${{ matrix.use-cross }}
+          cross-version: main
+        if: ${{ !matrix.features }}
 
   build:
     name: build (${{ matrix.target }})
@@ -165,19 +174,14 @@ jobs:
           toolchain: ${{ matrix.toolchain }}
           targets: ${{ matrix.target }}
 
-      - name: Install Cargo All Features
-        uses: taiki-e/cache-cargo-install-action@v2
-        with:
-          tool: cargo-all-features
-
       - name: Set up cache
         uses: Swatinem/rust-cache@23bce251a8cd2ffc3c1075eaa2367cf899916d84 # v2.7.3
 
       - name: Build
         uses: ClementTsang/cargo-action@a211c79cf22973eb590277586fbea20269ca3ca0 # v0.0.6
         with:
-          command: build-all-features
-          args: --release --target ${{ matrix.target }}
+          command: build
+          args: --release --target ${{ matrix.target }} --all-features
           toolchain: ${{ matrix.toolchain }}
           use-cross: ${{ matrix.use-cross }}
           cross-version: main
