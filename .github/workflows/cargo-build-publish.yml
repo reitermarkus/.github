@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
+        uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4
 
       - name: Install toolchain
         uses: dtolnay/rust-toolchain@nightly
@@ -43,7 +43,7 @@ jobs:
       matrix: ${{ steps.generate-matrix.outputs.matrix }}
     steps:
       - name: Check out repository
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
+        uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4
       - name: Install toolchain
         uses: dtolnay/rust-toolchain@stable
       - uses: reitermarkus/rust-build-matrix@v1
@@ -58,7 +58,7 @@ jobs:
         include: ${{ fromJSON(needs.generate-matrix.outputs.matrix) }}
     steps:
       - name: Check out repository
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
+        uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4
 
       - name: Get components
         id: components
@@ -116,7 +116,7 @@ jobs:
         include: ${{ fromJSON(needs.generate-matrix.outputs.matrix) }}
     steps:
       - name: Check out repository
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
+        uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4
 
       - name: Install toolchain
         uses: dtolnay/rust-toolchain@master
@@ -166,7 +166,7 @@ jobs:
         include: ${{ fromJSON(needs.generate-matrix.outputs.matrix) }}
     steps:
       - name: Check out repository
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
+        uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4
 
       - name: Install toolchain
         uses: dtolnay/rust-toolchain@master
@@ -231,7 +231,7 @@ jobs:
     needs: [lint, test, build]
     steps:
       - name: Check out repository
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
+        uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4
 
       - name: Install toolchain
         uses: dtolnay/rust-toolchain@stable
