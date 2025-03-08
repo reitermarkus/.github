@@ -50,7 +50,7 @@ jobs:
         id: generate-matrix
 
   lint:
-    name: lint 'features=${{matrix.features==[]}}' (${{ matrix.target }}${{ (matrix.features && format(', {0}', join(matrix.features, ','))) || '' }})
+    name: lint 'features=${{toJSON(matrix.features)}}=${{toJSON(matrix.features)=='[]'}}' (${{ matrix.target }}${{ (matrix.features && format(', {0}', join(matrix.features, ','))) || '' }})
     runs-on: ${{ matrix.os }}
     needs: generate-matrix
     strategy:
