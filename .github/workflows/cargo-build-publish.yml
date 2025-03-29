@@ -194,7 +194,7 @@ jobs:
           target_dir="target/${target}/release/"
 
           metadata="$(cargo metadata --format-version 1 --no-deps)"
-          package_name="$(jq -r '[.packages[] | select(.publish != []][0].name' <<< "${metadata}")"
+          package_name="$(jq -r '[.packages[] | select(.publish != [])][0].name' <<< "${metadata}")"
           files="$(jq "[[.packages[] | select(.publish != [])][0].targets[] | select(.kind[] | contains(\"bin\")) | .name]" <<< "${metadata}")"
 
           if [[ $(jq -r 'length' <<< "${files}") -eq 0 ]]; then
