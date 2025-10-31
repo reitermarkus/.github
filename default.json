@@ -3,7 +3,7 @@
   "extends": [
     "config:base",
     ":preserveSemverRanges",
-    "regexManagers:dockerfileVersions",
+    "customManagers:dockerfileVersions",
     "helpers:pinGitHubActionDigests"
   ],
   "packageRules": [
