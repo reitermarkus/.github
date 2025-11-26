@@ -31,7 +31,7 @@ jobs:
           components: rustfmt
 
       - name: Set up cache
-        uses: Swatinem/rust-cache@f13886b937689c021905a6b90929199931d60db1 # v2.8.1
+        uses: Swatinem/rust-cache@779680da715d629ac1d338a641029a2f4372abb5 # v2.8.2
 
       - name: Run cargo fmt
         run: cargo fmt -- --check
@@ -87,7 +87,7 @@ jobs:
           targets: ${{ matrix.target }}
 
       - name: Set up cache
-        uses: Swatinem/rust-cache@f13886b937689c021905a6b90929199931d60db1 # v2.8.1
+        uses: Swatinem/rust-cache@779680da715d629ac1d338a641029a2f4372abb5 # v2.8.2
 
       - name: Run cargo check
         uses: ClementTsang/cargo-action@2438cc5f3ba4e971289fffca2a00dedea6911f14 # v0.0.7
@@ -125,7 +125,7 @@ jobs:
           targets: ${{ matrix.target }}
 
       - name: Set up cache
-        uses: Swatinem/rust-cache@f13886b937689c021905a6b90929199931d60db1 # v2.8.1
+        uses: Swatinem/rust-cache@779680da715d629ac1d338a641029a2f4372abb5 # v2.8.2
 
       - name: Run tests without default features
         uses: ClementTsang/cargo-action@2438cc5f3ba4e971289fffca2a00dedea6911f14 # v0.0.7
@@ -175,7 +175,7 @@ jobs:
           targets: ${{ matrix.target }}
 
       - name: Set up cache
-        uses: Swatinem/rust-cache@f13886b937689c021905a6b90929199931d60db1 # v2.8.1
+        uses: Swatinem/rust-cache@779680da715d629ac1d338a641029a2f4372abb5 # v2.8.2
 
       - name: Build
         uses: ClementTsang/cargo-action@2438cc5f3ba4e971289fffca2a00dedea6911f14 # v0.0.7
@@ -240,7 +240,7 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - name: Set up cache
-        uses: Swatinem/rust-cache@f13886b937689c021905a6b90929199931d60db1 # v2.8.1
+        uses: Swatinem/rust-cache@779680da715d629ac1d338a641029a2f4372abb5 # v2.8.2
 
       - name: Check if crate should be published
         uses: SebRollen/toml-action@4cdab426d5e7838199ed25c199e8c0a1ce806671
