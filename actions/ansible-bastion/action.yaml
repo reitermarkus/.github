@@ -13,9 +13,11 @@ runs:
   steps:
     - name: Scan SSH keys for bastion host
       run: |
-        echo 'KNOWN_HOSTS<<EOF' >> "${GITHUB_ENV}"
-        ssh-keyscan -H "${host}" >> "${GITHUB_ENV}"
-        echo 'EOF' >> "${GITHUB_ENV}"
+        {
+          echo 'KNOWN_HOSTS<<EOF'
+          ssh-keyscan -H "${host}"
+          echo 'EOF'
+        } | tee -a "${GITHUB_ENV}"
       shell: bash
       env:
         host: ${{ inputs.host }}
