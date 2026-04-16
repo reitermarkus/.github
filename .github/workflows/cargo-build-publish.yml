@@ -197,7 +197,7 @@ jobs:
 
           # Prefer the first package that should be published.
           package_name="$(
-             jq -r '.packages | sort_by(.publish == []) | first | .name' <<< "${metadata}"
+            jq -r '.packages | sort_by(.publish == []) | first | .name' <<< "${metadata}"
           )"
 
           files="$(
