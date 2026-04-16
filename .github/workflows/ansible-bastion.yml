@@ -13,7 +13,7 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
       - name: Configure Ansible bastion host
-        uses: reitermarkus/.github/actions/ansible-bastion@b07d75e134de3b8deca2cead5535fb9a8977137b # main
+        uses: reitermarkus/.github/actions/ansible-bastion@d0534ac87836cb9fe1cc64022d6e9231810f3503 # main
         with:
           host: ${{ secrets.ANSIBLE_BASTION_HOST }}
           key: ${{ secrets.ANSIBLE_BASTION_KEY }}
