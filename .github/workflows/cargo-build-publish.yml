@@ -194,7 +194,12 @@ jobs:
           target_dir="target/${target}/release/"
 
           metadata="$(cargo metadata --format-version 1 --no-deps)"
-          package_name="$(jq -r 'first(.packages[]) | .name' <<< "${metadata}")"
+
+          # Prefer the first package that should be published.
+          package_name="$(
+             jq -r '.packages | sort_by(.publish == []) | first | .name' <<< "${metadata}"
+          )"
+
           files="$(
             jq --arg package_name "${package_name}" \
               '[first(.packages[] | select(.name == $package_name)) | .targets[] | select(.kind[] | contains("bin")) | .name]' <<< "${metadata}"
