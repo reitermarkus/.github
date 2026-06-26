@@ -25,7 +25,7 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
       - uses: hadolint/hadolint-action@2332a7b74a6de0dda2e2221d575162eba76ba5e5 # v3.3.0
         with:
           trusted-registries: docker.io,ghcr.io,registry.gitlab.com
@@ -35,7 +35,7 @@ jobs:
     needs: lint
     steps:
       - name: Check out Repository
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
 
       - name: Build and push Docker image
         uses: reitermarkus/.github/actions/docker-build-push@d0534ac87836cb9fe1cc64022d6e9231810f3503 # main
