@@ -38,7 +38,7 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
       - name: Build and push Docker image
-        uses: reitermarkus/.github/actions/docker-build-push@d0534ac87836cb9fe1cc64022d6e9231810f3503 # main
+        uses: reitermarkus/.github/actions/docker-build-push@cb078a50f0101bc0c1fcd4077d3193a1cc655bf4 # main
         with:
           registry: ${{ inputs.registry }}
           image-name: ${{ inputs.image-name }}
