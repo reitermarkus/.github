@@ -6,7 +6,7 @@ on:
         default: ''
         type: string
     secrets:
-      CRATESIO_TOKEN:
+      CARGO_REGISTRY_TOKEN:
         required: false
 
 name: CI
@@ -262,10 +262,6 @@ jobs:
           path:
             ${{ runner.temp }}/artifacts
 
-      - name: Log into crates.io
-        if: steps.cargo-toml-publish.outputs.value != 'false' && github.event_name != 'pull_request'
-        run: cargo login ${{ secrets.CRATESIO_TOKEN }}
-
       - name: Upload GitHub release artifacts
         if: >
           needs.build.outputs.artifact != '' && github.event_name == 'push' && (
@@ -281,3 +277,5 @@ jobs:
       - name: Publish crate
         if: steps.cargo-toml-publish.outputs.value != 'false'
         run: cargo publish --target x86_64-unknown-linux-gnu ${{ !startsWith(github.ref, 'refs/tags/v') && '--dry-run' || '' }}
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
