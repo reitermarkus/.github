@@ -132,16 +132,7 @@ jobs:
       - name: Set up cache
         uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4 # v2.9.1
 
-      - name: Run tests without default features
-        uses: ClementTsang/cargo-action@2438cc5f3ba4e971289fffca2a00dedea6911f14 # v0.0.7
-        with:
-          command: test
-          args: --no-fail-fast --target ${{ matrix.target }} --no-default-features${{ (toJSON(matrix.features) != '[]' && format(' --no-default-features --features {0}', join(matrix.features, ','))) || '' }}
-          toolchain: ${{ matrix.toolchain }}
-          use-cross: ${{ matrix.use-cross }}
-          cross-version: main
-
-      - name: Run tests with default features
+      - name: Run tests
         uses: ClementTsang/cargo-action@2438cc5f3ba4e971289fffca2a00dedea6911f14 # v0.0.7
         with:
           command: test
