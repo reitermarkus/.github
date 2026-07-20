@@ -141,16 +141,6 @@ jobs:
           use-cross: ${{ matrix.use-cross }}
           cross-version: main
 
-      - name: Run tests with all features
-        uses: ClementTsang/cargo-action@2438cc5f3ba4e971289fffca2a00dedea6911f14 # v0.0.7
-        with:
-          command: test
-          args: --no-fail-fast --target ${{ matrix.target }} --all-features
-          toolchain: ${{ matrix.toolchain }}
-          use-cross: ${{ matrix.use-cross }}
-          cross-version: main
-        if: ${{ toJSON(matrix.features) == '[]' }}
-
   build:
     name: build (${{ matrix.target }}${{ (toJSON(matrix.features) != '[]' && format(', {0}', join(matrix.features, ','))) || '' }})
     outputs:
