@@ -66,6 +66,7 @@ jobs:
 
       - name: Get components
         id: components
+        shell: bash
         run: |
           if [[ "${target}" =~ xtensa* ]]; then
             echo "Installing Xtensa toolchain …"
@@ -192,6 +193,7 @@ jobs:
 
       - name: Archive artifacts
         id: artifact
+        shell: bash
         run: |
           set -x
 
