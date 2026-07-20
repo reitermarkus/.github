@@ -199,9 +199,9 @@ jobs:
 
           metadata="$(cargo metadata --format-version 1 --no-deps)"
 
-          # Prefer the first package that should be published.
+          # Prefer the first package that should be published, sorted by name.
           package_name="$(
-            jq -r '.packages | sort_by(.publish == []) | first | .name' <<< "${metadata}"
+            jq -r '.packages | sort_by(.publish == []) | sort_by(.name) | first | .name' <<< "${metadata}"
           )"
 
           files="$(
