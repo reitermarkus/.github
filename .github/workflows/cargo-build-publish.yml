@@ -98,7 +98,7 @@ jobs:
         uses: ClementTsang/cargo-action@2438cc5f3ba4e971289fffca2a00dedea6911f14 # v0.0.7
         with:
           command: check
-          args: --target ${{ matrix.target}}${{ (toJSON(matrix.features) != '[]' && format(' --features {0}', join(matrix.features, ','))) || '' }}
+          args: --target ${{ matrix.target}}${{ (toJSON(matrix.features) != '[]' && format(' --no-default-features --features {0}', join(matrix.features, ','))) || '' }}
           toolchain: ${{ matrix.toolchain }}
           use-cross: ${{ matrix.use-cross }}
           cross-version: main
@@ -107,7 +107,7 @@ jobs:
         uses: ClementTsang/cargo-action@2438cc5f3ba4e971289fffca2a00dedea6911f14 # v0.0.7
         with:
           command: clippy
-          args: --target ${{ matrix.target}}${{ (toJSON(matrix.features) != '[]' && format(' --features {0}', join(matrix.features, ','))) || '' }} -- -D warnings
+          args: --target ${{ matrix.target}}${{ (toJSON(matrix.features) != '[]' && format(' --no-default-features --features {0}', join(matrix.features, ','))) || '' }} -- -D warnings
           toolchain: ${{ matrix.toolchain }}
           use-cross: ${{ matrix.use-cross }}
           cross-version: main
@@ -136,7 +136,7 @@ jobs:
         uses: ClementTsang/cargo-action@2438cc5f3ba4e971289fffca2a00dedea6911f14 # v0.0.7
         with:
           command: test
-          args: --no-fail-fast --target ${{ matrix.target }} --no-default-features${{ (toJSON(matrix.features) != '[]' && format(' --features {0}', join(matrix.features, ','))) || '' }}
+          args: --no-fail-fast --target ${{ matrix.target }} --no-default-features${{ (toJSON(matrix.features) != '[]' && format(' --no-default-features --features {0}', join(matrix.features, ','))) || '' }}
           toolchain: ${{ matrix.toolchain }}
           use-cross: ${{ matrix.use-cross }}
           cross-version: main
@@ -145,7 +145,7 @@ jobs:
         uses: ClementTsang/cargo-action@2438cc5f3ba4e971289fffca2a00dedea6911f14 # v0.0.7
         with:
           command: test
-          args: --no-fail-fast --target ${{ matrix.target }}${{ (toJSON(matrix.features) != '[]' && format(' --features {0}', join(matrix.features, ','))) || '' }}
+          args: --no-fail-fast --target ${{ matrix.target }}${{ (toJSON(matrix.features) != '[]' && format(' --no-default-features --features {0}', join(matrix.features, ','))) || '' }}
           toolchain: ${{ matrix.toolchain }}
           use-cross: ${{ matrix.use-cross }}
           cross-version: main
@@ -186,7 +186,7 @@ jobs:
         uses: ClementTsang/cargo-action@2438cc5f3ba4e971289fffca2a00dedea6911f14 # v0.0.7
         with:
           command: build
-          args: --release --target ${{ matrix.target }}${{ (toJSON(matrix.features) != '[]' && format(' --features {0}', join(matrix.features, ','))) || ' --all-features' }}
+          args: --release --target ${{ matrix.target }}${{ (toJSON(matrix.features) != '[]' && format(' --no-default-features --features {0}', join(matrix.features, ','))) || ' --all-features' }}
           toolchain: ${{ matrix.toolchain }}
           use-cross: ${{ matrix.use-cross }}
           cross-version: main
