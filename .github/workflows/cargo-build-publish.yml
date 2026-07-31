@@ -50,11 +50,11 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - name: Install toolchain
         uses: dtolnay/rust-toolchain@4cda84d5c5c54efe2404f9d843567869ab1699d4 # stable
-      - uses: reitermarkus/rust-build-matrix@0b150fc468444f62a5910a1d614540c9f5b6b096 # v1
+      - uses: reitermarkus/rust-build-matrix@feature-matrix
         id: generate-matrix
 
   lint:
-    name: lint (${{ matrix.target }}${{ (toJSON(matrix.features) != '[]' && format(', {0}', join(matrix.features, ','))) || '' }})
+    name: lint (${{ matrix.target }})
     runs-on: ${{ matrix.os }}
     needs: generate-matrix
     strategy:
@@ -94,11 +94,15 @@ jobs:
       - name: Set up cache
         uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4 # v2.9.1
 
+      - name: Install cargo-feature-combinations
+        if: matrix.use-cargo-feature-combinations
+        run: cargo install --locked cargo-feature-combinations
+
       - name: Run cargo check
         uses: ClementTsang/cargo-action@2438cc5f3ba4e971289fffca2a00dedea6911f14 # v0.0.7
         with:
-          command: check
-          args: --target ${{ matrix.target}}${{ (toJSON(matrix.features) != '[]' && format(' --no-default-features --features {0}', join(matrix.features, ','))) || '' }}
+          command: ${{ (toJSON(matrix.use-cargo-feature-combinations) && 'fc') || 'check' }}
+          args: ${{ (toJSON(matrix.use-cargo-feature-combinations) && 'check') || '' }} --target ${{ matrix.target }}
           toolchain: ${{ matrix.toolchain }}
           use-cross: ${{ matrix.use-cross }}
           cross-version: main
@@ -106,14 +110,14 @@ jobs:
       - name: Run cargo clippy
         uses: ClementTsang/cargo-action@2438cc5f3ba4e971289fffca2a00dedea6911f14 # v0.0.7
         with:
-          command: clippy
-          args: --target ${{ matrix.target}}${{ (toJSON(matrix.features) != '[]' && format(' --no-default-features --features {0}', join(matrix.features, ','))) || '' }} -- -D warnings
+          command: ${{ (toJSON(matrix.use-cargo-feature-combinations) && 'fc') || 'clippy' }}
+          args: ${{ (toJSON(matrix.use-cargo-feature-combinations) && 'clippy') || '' }} --target ${{ matrix.target}} -- -D warnings
           toolchain: ${{ matrix.toolchain }}
           use-cross: ${{ matrix.use-cross }}
           cross-version: main
 
   test:
-    name: test (${{ matrix.target }}${{ (toJSON(matrix.features) != '[]' && format(', {0}', join(matrix.features, ','))) || '' }})
+    name: test (${{ matrix.target }})
     runs-on: ${{ matrix.os }}
     needs: [lint, generate-matrix]
     strategy:
@@ -132,17 +136,21 @@ jobs:
       - name: Set up cache
         uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4 # v2.9.1
 
+      - name: Install cargo-feature-combinations
+        if: matrix.use-cargo-feature-combinations
+        run: cargo install --locked cargo-feature-combinations
+
       - name: Run tests
         uses: ClementTsang/cargo-action@2438cc5f3ba4e971289fffca2a00dedea6911f14 # v0.0.7
         with:
-          command: test
-          args: --no-fail-fast --target ${{ matrix.target }}${{ (toJSON(matrix.features) != '[]' && format(' --no-default-features --features {0}', join(matrix.features, ','))) || '' }}
+          command: ${{ (toJSON(matrix.use-cargo-feature-combinations) && 'fc') || 'test' }}
+          args: ${{ (toJSON(matrix.use-cargo-feature-combinations) && 'test') || '' }} --no-fail-fast --target ${{ matrix.target }}
           toolchain: ${{ matrix.toolchain }}
           use-cross: ${{ matrix.use-cross }}
           cross-version: main
 
   build:
-    name: build (${{ matrix.target }}${{ (toJSON(matrix.features) != '[]' && format(', {0}', join(matrix.features, ','))) || '' }})
+    name: build (${{ matrix.target }})
     outputs:
       artifact: ${{ steps.artifact.outputs.name }}
     runs-on: ${{ matrix.os }}
@@ -163,11 +171,15 @@ jobs:
       - name: Set up cache
         uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4 # v2.9.1
 
+      - name: Install cargo-feature-combinations
+        if: matrix.use-cargo-feature-combinations
+        run: cargo install --locked cargo-feature-combinations
+
       - name: Build
         uses: ClementTsang/cargo-action@2438cc5f3ba4e971289fffca2a00dedea6911f14 # v0.0.7
         with:
-          command: build
-          args: --release --target ${{ matrix.target }}${{ (toJSON(matrix.features) != '[]' && format(' --no-default-features --features {0}', join(matrix.features, ','))) || ' --all-features' }}
+          command: ${{ (toJSON(matrix.use-cargo-feature-combinations) && 'fc') || 'build' }}
+          args: ${{ (toJSON(matrix.use-cargo-feature-combinations) && 'build') || '' }} --release --target ${{ matrix.target }}
           toolchain: ${{ matrix.toolchain }}
           use-cross: ${{ matrix.use-cross }}
           cross-version: main
