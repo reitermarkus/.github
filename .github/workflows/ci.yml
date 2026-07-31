@@ -4,7 +4,7 @@ name: CI
 
 jobs:
   ci:
-    uses: reitermarkus/.github/.github/workflows/docker-build-push.yml@937ca3b83132fb587db067ce8c2dbfa1fa634425 # main
+    uses: reitermarkus/.github/.github/workflows/docker-build-push.yml@d93e83dbe814e0f4d0f2bd94a66904ec64e1c8c4 # main
     with:
       image-name: ${{ github.repository_owner }}/github
   renovate:
