@@ -35,7 +35,7 @@ jobs:
           components: rustfmt
 
       - name: Set up cache
-        uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4 # v2.9.1
+        uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
 
       - name: Run cargo fmt
         run: cargo fmt -- --check
@@ -92,7 +92,7 @@ jobs:
           targets: ${{ matrix.target }}
 
       - name: Set up cache
-        uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4 # v2.9.1
+        uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
 
       - name: Install cargo-feature-combinations
         if: matrix.use-cargo-feature-combinations
@@ -134,7 +134,7 @@ jobs:
           targets: ${{ matrix.target }}
 
       - name: Set up cache
-        uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4 # v2.9.1
+        uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
 
       - name: Install cargo-feature-combinations
         if: matrix.use-cargo-feature-combinations
@@ -169,7 +169,7 @@ jobs:
           targets: ${{ matrix.target }}
 
       - name: Set up cache
-        uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4 # v2.9.1
+        uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
 
       - name: Install cargo-feature-combinations
         if: matrix.use-cargo-feature-combinations
@@ -244,7 +244,7 @@ jobs:
         uses: dtolnay/rust-toolchain@4cda84d5c5c54efe2404f9d843567869ab1699d4 # stable
 
       - name: Set up cache
-        uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4 # v2.9.1
+        uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
 
       - name: Check if crate should be published
         uses: SebRollen/toml-action@4cdab426d5e7838199ed25c199e8c0a1ce806671
