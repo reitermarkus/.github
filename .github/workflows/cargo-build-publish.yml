@@ -1,6 +1,10 @@
 on:
   workflow_call:
     inputs:
+      build_target:
+        description: Build target(s)
+        default: ''
+        type: string
       toolchain:
         description: Rust toolchain
         default: ''
@@ -52,6 +56,8 @@ jobs:
         uses: dtolnay/rust-toolchain@4cda84d5c5c54efe2404f9d843567869ab1699d4 # stable
       - uses: reitermarkus/rust-build-matrix@acbe92c29db507e080f66f641ff6906904ec28cc # main
         id: generate-matrix
+        with:
+          build_target: ${{ github.event.inputs.build_target }}
 
   lint:
     name: lint (${{ matrix.target }})
