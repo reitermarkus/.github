@@ -107,8 +107,8 @@ jobs:
       - name: Run cargo check
         uses: ClementTsang/cargo-action@2438cc5f3ba4e971289fffca2a00dedea6911f14 # v0.0.7
         with:
-          command: ${{ (toJSON(matrix.use-cargo-feature-combinations) && 'fc') || 'check' }}
-          args: ${{ (toJSON(matrix.use-cargo-feature-combinations) && 'check') || '' }} --target ${{ matrix.target }}
+          command: ${{ (fromJSON(matrix.use-cargo-feature-combinations) && 'fc') || 'check' }}
+          args: ${{ (fromJSON(matrix.use-cargo-feature-combinations) && 'check') || '' }} --target ${{ matrix.target }}
           toolchain: ${{ matrix.toolchain }}
           use-cross: ${{ matrix.use-cross }}
           cross-version: main
@@ -116,8 +116,8 @@ jobs:
       - name: Run cargo clippy
         uses: ClementTsang/cargo-action@2438cc5f3ba4e971289fffca2a00dedea6911f14 # v0.0.7
         with:
-          command: ${{ (toJSON(matrix.use-cargo-feature-combinations) && 'fc') || 'clippy' }}
-          args: ${{ (toJSON(matrix.use-cargo-feature-combinations) && 'clippy') || '' }} --target ${{ matrix.target}} -- -D warnings
+          command: ${{ (fromJSON(matrix.use-cargo-feature-combinations) && 'fc') || 'clippy' }}
+          args: ${{ (fromJSON(matrix.use-cargo-feature-combinations) && 'clippy') || '' }} --target ${{ matrix.target}} -- -D warnings
           toolchain: ${{ matrix.toolchain }}
           use-cross: ${{ matrix.use-cross }}
           cross-version: main
@@ -149,8 +149,8 @@ jobs:
       - name: Run tests
         uses: ClementTsang/cargo-action@2438cc5f3ba4e971289fffca2a00dedea6911f14 # v0.0.7
         with:
-          command: ${{ (toJSON(matrix.use-cargo-feature-combinations) && 'fc') || 'test' }}
-          args: ${{ (toJSON(matrix.use-cargo-feature-combinations) && 'test') || '' }} --no-fail-fast --target ${{ matrix.target }}
+          command: ${{ (fromJSON(matrix.use-cargo-feature-combinations) && 'fc') || 'test' }}
+          args: ${{ (fromJSON(matrix.use-cargo-feature-combinations) && 'test') || '' }} --no-fail-fast --target ${{ matrix.target }}
           toolchain: ${{ matrix.toolchain }}
           use-cross: ${{ matrix.use-cross }}
           cross-version: main
@@ -184,8 +184,8 @@ jobs:
       - name: Build
         uses: ClementTsang/cargo-action@2438cc5f3ba4e971289fffca2a00dedea6911f14 # v0.0.7
         with:
-          command: ${{ (toJSON(matrix.use-cargo-feature-combinations) && 'fc') || 'build' }}
-          args: ${{ (toJSON(matrix.use-cargo-feature-combinations) && 'build') || '' }} --release --target ${{ matrix.target }}
+          command: ${{ (fromJSON(matrix.use-cargo-feature-combinations) && 'fc') || 'build' }}
+          args: ${{ (fromJSON(matrix.use-cargo-feature-combinations) && 'build') || '' }} --release --target ${{ matrix.target }}
           toolchain: ${{ matrix.toolchain }}
           use-cross: ${{ matrix.use-cross }}
           cross-version: main
