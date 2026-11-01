@@ -69,8 +69,8 @@ runs:
 
     - name: Set output
       run: |
-        echo "::set-output name=digest::$(echo "${metadata}" | jq -r '.["containerimage.digest"]')"
-        echo "::set-output name=image-name::$(echo "${metadata}" | jq -r '.["image.name"]')"
+        echo "digest=$(echo "${metadata}" | jq -r '.["containerimage.digest"]')" >> "${GITHUB_OUTPUT}"
+        echo "image-name=$(echo "${metadata}" | jq -r '.["image.name"]')" >> "${GITHUB_OUTPUT}"
       shell: bash
       env:
         metadata: ${{ steps.build-push.outputs.metadata }}
