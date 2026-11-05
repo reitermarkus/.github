@@ -5,6 +5,10 @@ on:
         description: Build target(s)
         default: ''
         type: string
+      build_features:
+        description: Build features
+        default: ''
+        type: string
       toolchain:
         description: Rust toolchain
         default: ''
@@ -185,7 +189,7 @@ jobs:
         uses: ClementTsang/cargo-action@2438cc5f3ba4e971289fffca2a00dedea6911f14 # v0.0.7
         with:
           command: ${{ (fromJSON(matrix.use-cargo-feature-combinations) && 'fc') || 'build' }}
-          args: ${{ (fromJSON(matrix.use-cargo-feature-combinations) && 'build') || '' }} --release --target ${{ matrix.target }}
+          args: ${{ (fromJSON(matrix.use-cargo-feature-combinations) && 'build') || '' }} --release --target ${{ matrix.target }} --features '${{ github.event.inputs.build_features }}'
           toolchain: ${{ matrix.toolchain }}
           use-cross: ${{ matrix.use-cross }}
           cross-version: main
