@@ -189,7 +189,7 @@ jobs:
         uses: ClementTsang/cargo-action@2438cc5f3ba4e971289fffca2a00dedea6911f14 # v0.0.7
         with:
           command: ${{ (fromJSON(matrix.use-cargo-feature-combinations) && 'fc') || 'build' }}
-          args: ${{ (fromJSON(matrix.use-cargo-feature-combinations) && 'build') || '' }} --release --target ${{ matrix.target }}${{ (github.event.inputs.build_features && format(' --features {0}', github.event.inputs.build_features)) || '' }}
+          args: ${{ (fromJSON(matrix.use-cargo-feature-combinations) && 'build') || '' }} --release --target ${{ matrix.target }}${{ (github.event.inputs.build_features && ' --features ') || '' }}${{ github.event.inputs.build_features }}
           toolchain: ${{ matrix.toolchain }}
           use-cross: ${{ matrix.use-cross }}
           cross-version: main
