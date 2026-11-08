@@ -200,6 +200,9 @@ jobs:
         run: |
           set -x
 
+          echo 'Inputs:'
+          echo "${inputs}" | jq
+
           target_dir="target/${target}/release/"
 
           metadata="$(cargo metadata --format-version 1 --no-deps)"
@@ -234,6 +237,7 @@ jobs:
           echo "path=${artifact_path}" >> "${GITHUB_OUTPUT}"
         env:
           target: ${{ matrix.target }}
+          inputs: ${{ toJson(github.event.inputs) }}
 
       - name: Upload artifacts
         if: ${{ steps.artifact.outputs.path }}
