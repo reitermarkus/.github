@@ -61,7 +61,7 @@ jobs:
       - uses: reitermarkus/rust-build-matrix@f66942e0555ad6ca1083ca511e3f29fdea0b0d5b # main
         id: generate-matrix
         with:
-          build_target: ${{ github.event.inputs.build_target }}
+          build_target: ${{ inputs.build_target }}
 
   lint:
     name: lint (${{ matrix.target }})
@@ -189,7 +189,7 @@ jobs:
         uses: ClementTsang/cargo-action@2438cc5f3ba4e971289fffca2a00dedea6911f14 # v0.0.7
         with:
           command: ${{ (fromJSON(matrix.use-cargo-feature-combinations) && 'fc') || 'build' }}
-          args: ${{ (fromJSON(matrix.use-cargo-feature-combinations) && 'build') || '' }} --release --target ${{ matrix.target }}${{ (github.event.inputs.build_features && ' --features ') || '' }}${{ github.event.inputs.build_features }}
+          args: ${{ (fromJSON(matrix.use-cargo-feature-combinations) && 'build') || '' }} --release --target ${{ matrix.target }}${{ (inputs.build_features && ' --features ') || '' }}${{ inputs.build_features }}
           toolchain: ${{ matrix.toolchain }}
           use-cross: ${{ matrix.use-cross }}
           cross-version: main
