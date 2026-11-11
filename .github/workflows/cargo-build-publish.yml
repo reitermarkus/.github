@@ -58,7 +58,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - name: Install toolchain
         uses: dtolnay/rust-toolchain@b725eda525362e7cf34af9a7243cac1e3f01a7ec # stable
-      - uses: reitermarkus/rust-build-matrix@f66942e0555ad6ca1083ca511e3f29fdea0b0d5b # main
+      - uses: reitermarkus/rust-build-matrix@653d13e70d0a4b1c69ae5d35f21a109bae5b4379 # main
         id: generate-matrix
         with:
           build_target: ${{ inputs.build_target }}
