@@ -69,6 +69,7 @@ runs:
 
     - name: Set output
       run: |
+        set -x
         echo "digest=$(echo "${metadata}" | jq -r '.["containerimage.digest"]')" >> "${GITHUB_OUTPUT}"
         echo "image-name=$(echo "${metadata}" | jq -r '.["image.name"]')" >> "${GITHUB_OUTPUT}"
       shell: bash
